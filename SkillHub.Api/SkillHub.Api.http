@@ -1,0 +1,99 @@
+@SkillHub_Host = http://localhost:5180
+@Api = {{SkillHub_Host}}/api/v1
+
+### 1. Health Check
+GET {{SkillHub_Host}}/health
+Accept: application/json
+
+### 2. Scalar Documentation
+GET {{SkillHub_Host}}/scalar
+
+### 3. Registro de Participante (Público)
+POST {{Api}}/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Juan Perez",
+  "email": "juan.perez@example.com",
+  "password": "Participant123!"
+}
+
+### 4. Login Participante (Obtiene JWT)
+# @name loginParticipant
+POST {{Api}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan.perez@example.com",
+  "password": "Participant123!"
+}
+
+### 5. Login Empleado / Instructor (Obtiene JWT)
+# @name loginEmployee
+POST {{Api}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@skillhub.com",
+  "password": "Admin123!"
+}
+
+### Guardar Token de Empleado
+@employeeToken = {{loginEmployee.response.body.token}}
+@participantToken = {{loginParticipant.response.body.token}}
+
+### 6. Catálogo de Talleres Futuros con Cupos Disponibles (Público)
+GET {{Api}}/workshops
+Accept: application/json
+
+### 7. Detalle de un Taller con Cupos Disponibles (Público)
+# Reemplazar {workshopId} por el ID obtenido del catálogo
+GET {{Api}}/workshops/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### 8. Crear Taller (Solo Empleado)
+POST {{Api}}/workshops
+Authorization: Bearer {{employeeToken}}
+Content-Type: application/json
+
+{
+  "code": "FOT-002",
+  "title": "Fotografía Nocturna y Larga Exposición",
+  "description": "Taller práctico sobre técnicas de exposición en condiciones de baja luminosidad.",
+  "instructorEmail": "carlos.mendoza@skillhub.com",
+  "startDate": "2026-11-20T19:00:00Z",
+  "endDate": "2026-11-20T22:00:00Z",
+  "maxCapacity": 10
+}
+
+### 9. Inscribirse en un Taller (Participante Autenticado)
+POST {{Api}}/enrollments
+Authorization: Bearer {{participantToken}}
+Content-Type: application/json
+
+{
+  "workshopId": "00000000-0000-0000-0000-000000000000"
+}
+
+### 10. Mis Inscripciones (Participante Autenticado)
+GET {{Api}}/enrollments/mine
+Authorization: Bearer {{participantToken}}
+Accept: application/json
+
+### 11. Lista de Inscritos de un Taller (Solo Empleado)
+GET {{Api}}/workshops/00000000-0000-0000-0000-000000000000/enrollments
+Authorization: Bearer {{employeeToken}}
+Accept: application/json
+
+### 12. Cancelar Inscripción (Dueño o Empleado)
+PATCH {{Api}}/enrollments/00000000-0000-0000-0000-000000000000/cancel
+Authorization: Bearer {{participantToken}}
+
+### 13. Descargar Constancia de Inscripción en PDF (Dueño o Empleado)
+GET {{Api}}/enrollments/00000000-0000-0000-0000-000000000000/certificate
+Authorization: Bearer {{participantToken}}
+
+### 14. Reporte de Talleres con Más Inscritos (Solo Empleado)
+GET {{Api}}/reports/top-workshops
+Authorization: Bearer {{employeeToken}}
+Accept: application/json

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>SkillHub.Web</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SkillHub.Application\SkillHub.Application.csproj" />
+        <ProjectReference Include="..\SkillHub.Domain\SkillHub.Domain.csproj" />
+        <ProjectReference Include="..\SkillHub.Infrastructure\SkillHub.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,51 @@
+@model SkillHub.Application.DTOs.LoginDto
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0 my-5">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-circle display-4 text-primary"></i>
+                    <h3 class="fw-bold mt-2">Iniciar Sesión</h3>
+                    <p class="text-muted small">Ingresa con tu cuenta de participante de SkillHub</p>
+                </div>
+
+                <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold">Correo Electrónico</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="nombre@ejemplo.com" required autofocus />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label fw-semibold">Contraseña</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" required />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
+                    </button>
+                </form>
+
+                <div class="text-center mt-4 border-top pt-3">
+                    <p class="text-muted small mb-0">
+                        ¿No tienes una cuenta? <a asp-action="Register" class="text-primary fw-semibold text-decoration-none">Regístrate como participante</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
