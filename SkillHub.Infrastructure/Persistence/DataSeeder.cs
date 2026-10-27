@@ -179,6 +179,7 @@ public static class DataSeeder
 
         try
         {
+            ExcelPackage.License.SetNonCommercialOrganization("SkillHub");
             using var package = new ExcelPackage(new FileInfo(excelPath));
 
             // Hoja Instructors

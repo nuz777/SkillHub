@@ -5,12 +5,18 @@ namespace SkillHub.Infrastructure.Services;
 
 public class ExcelReader : IExcelReader
 {
+    static ExcelReader()
+    {
+        ExcelPackage.License.SetNonCommercialOrganization("SkillHub");
+    }
+
     public async Task<IReadOnlyList<(int RowNumber, string ParticipantEmail, string WorkshopCode)>> ReadEnrollmentRowsAsync(
         Stream fileStream,
         CancellationToken cancellationToken = default)
     {
         var result = new List<(int RowNumber, string ParticipantEmail, string WorkshopCode)>();
 
+        ExcelPackage.License.SetNonCommercialOrganization("SkillHub");
         using var package = new ExcelPackage();
         await package.LoadAsync(fileStream, cancellationToken);
 

@@ -72,6 +72,7 @@ public static class DependencyInjection
         services.AddScoped<IInstructorRepository, InstructorRepository>();
 
         // Servicios externos (Excel & PDF)
+        OfficeOpenXml.ExcelPackage.License.SetNonCommercialOrganization("SkillHub");
         services.AddScoped<IExcelReader, ExcelReader>();
         services.AddScoped<ICertificatePdfGenerator, QuestPdfCertificateGenerator>();
 
