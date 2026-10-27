@@ -8,7 +8,7 @@
         <h2 class="fw-bold text-dark mb-1">
             <i class="bi bi-bookmark-check-fill text-primary me-2"></i>Mis Inscripciones
         </h2>
-        <p class="text-muted mb-0">Gestiona tus cupos confirmados, descarga constancias oficiales en PDF y revisa el estado de tus talleres.</p>
+        <p class="text-muted mb-0">Gestiona tus cupos confirmados, visualiza y descarga constancias oficiales de inscripción y revisa tus talleres.</p>
     </div>
     <div class="col-md-4 text-md-end mt-3 mt-md-0">
         <a asp-controller="Workshops" asp-action="Index" class="btn btn-outline-primary fw-semibold" style="border-radius: 10px;">
@@ -43,7 +43,7 @@ else
                         <th>Instructor</th>
                         <th>Inscripción</th>
                         <th>Estado</th>
-                        <th class="text-end pe-4">Acciones</th>
+                        <th class="text-end pe-4">Constancia y Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +54,15 @@ else
                         <tr>
                             <td class="ps-4 py-3">
                                 <div class="fw-bold text-dark" style="font-size: 0.95rem;">@item.WorkshopTitle</div>
-                                <span class="badge bg-light text-secondary border font-monospace small">@item.WorkshopCode</span>
+                                <div class="d-flex align-items-center gap-2 mt-1">
+                                    <span class="badge bg-light text-secondary border font-monospace small">@item.WorkshopCode</span>
+                                    @if (item.StartDate.HasValue)
+                                    {
+                                        <span class="text-muted small" style="font-size: 0.75rem;">
+                                            <i class="bi bi-calendar-event me-1"></i>@item.StartDate.Value.ToLocalTime().ToString("dd MMM yyyy, HH:mm")
+                                        </span>
+                                    }
+                                </div>
                             </td>
                             <td>
                                 <div class="small fw-semibold text-dark">@item.InstructorName</div>
@@ -84,19 +92,30 @@ else
                                 }
                             </td>
                             <td class="text-end pe-4">
-                                <div class="d-inline-flex gap-2">
+                                <div class="d-inline-flex align-items-center gap-2">
                                     @if (isActive)
                                     {
-                                        <a asp-action="Certificate" asp-route-id="@item.Id" class="btn btn-sm btn-success fw-semibold shadow-xs" style="border-radius: 8px;" title="Descargar Constancia Oficial en PDF">
-                                            <i class="bi bi-file-earmark-pdf-fill me-1"></i> Constancia PDF
-                                        </a>
+                                        <!-- Ver Constancia Digital (Modal) -->
+                                        <button type="button" class="btn btn-sm btn-outline-primary fw-semibold d-inline-flex align-items-center gap-1 shadow-xs" data-bs-toggle="modal" data-bs-target="#certModal-@item.Id" style="border-radius: 8px;">
+                                            <i class="bi bi-eye-fill"></i> Ver Constancia
+                                        </button>
+
+                                        <!-- Botones PDF (Descarga directa y Abrir en pestaña) -->
+                                        <div class="btn-group shadow-xs">
+                                            <a asp-action="Certificate" asp-route-id="@item.Id" asp-route-download="true" class="btn btn-sm btn-success fw-semibold" style="border-radius: 8px 0 0 8px;" title="Descargar Constancia Oficial en PDF">
+                                                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+                                            </a>
+                                            <a asp-action="Certificate" asp-route-id="@item.Id" target="_blank" class="btn btn-sm btn-success dropdown-toggle-split px-2" style="border-radius: 0 8px 8px 0;" title="Abrir PDF en pestaña nueva">
+                                                <i class="bi bi-box-arrow-up-right"></i>
+                                            </a>
+                                        </div>
 
                                         @if (item.CanCancel)
                                         {
                                             <form asp-action="Cancel" method="post" onsubmit="return confirm('¿Seguro que deseas cancelar tu inscripción? Se liberará el cupo.');" class="d-inline">
                                                 @Html.AntiForgeryToken()
                                                 <input type="hidden" name="id" value="@item.Id" />
-                                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold" style="border-radius: 8px;">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold" style="border-radius: 8px;" title="Cancelar inscripción">
                                                     <i class="bi bi-x-circle me-1"></i> Cancelar
                                                 </button>
                                             </form>
@@ -120,4 +139,172 @@ else
             </table>
         </div>
     </div>
+}
+
+@section Modals {
+    @foreach (var item in Model.Where(m => m.Status == SkillHub.Domain.Enums.EnrollmentStatus.Active))
+    {
+        <!-- Modal Constancia Oficial -->
+        <div class="modal fade" id="certModal-@item.Id" tabindex="-1" aria-labelledby="certModalLabel-@item.Id" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                    <!-- Header -->
+                    <div class="modal-header bg-dark text-white border-0 px-4 py-3 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary text-uppercase px-2 py-1 fw-bold">Acreditación Oficial</span>
+                            <h5 class="modal-title fw-bold mb-0 text-white" id="certModalLabel-@item.Id">
+                                <i class="bi bi-award-fill text-warning me-2"></i>Constancia Oficial de Inscripción
+                            </h5>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Body con diseño de diploma/constancia -->
+                    <div class="modal-body p-4 bg-light">
+                        <div class="bg-white p-4 p-md-5 rounded-3 border shadow-sm position-relative overflow-hidden" id="certificate-print-@item.Id" style="border: 2px solid #0f172a !important; outline: 1px solid #d97706; outline-offset: -6px;">
+                            
+                            <!-- Encabezado Institucional -->
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center border-bottom pb-3 mb-4 gap-2">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-dark text-white fw-bold px-3 py-1 rounded small tracking-wider" style="letter-spacing: 1px;">
+                                        SKILLHUB
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark small text-uppercase mb-0">Centro de Formación Presencial</div>
+                                        <div class="text-muted" style="font-size: 0.72rem;">Acreditación y Registro Académico Continuo</div>
+                                    </div>
+                                </div>
+                                <div class="text-sm-end">
+                                    <div class="badge bg-light text-dark border px-2 py-1 text-uppercase font-monospace small">
+                                        Folio: SKH-2026-@item.Id.ToString().Substring(0, 8).ToUpper()
+                                    </div>
+                                    <div class="text-success fw-bold mt-1" style="font-size: 0.75rem;">
+                                        <i class="bi bi-shield-fill-check"></i> Activa y Confirmada
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Título Central -->
+                            <div class="text-center mb-4">
+                                <h3 class="fw-bold text-dark text-uppercase mb-1" style="letter-spacing: 1px;">Constancia Oficial de Inscripción</h3>
+                                <p class="text-muted fst-italic small mb-0">Certificado de asignación formal de cupo presencial</p>
+                            </div>
+
+                            <!-- Texto de Acreditación -->
+                            <div class="text-center mb-4">
+                                <p class="text-secondary small mb-2">La Coordinación Académica de SkillHub hace constar formalmente que:</p>
+                                <h2 class="fw-bold text-primary mb-1">@item.ParticipantName</h2>
+                                <div class="text-muted small fst-italic">Cuenta digital / correo: @item.ParticipantEmail</div>
+                                <p class="text-secondary small mt-2 mb-0">Cuenta con plaza confirmada para cursar el programa académico:</p>
+                            </div>
+
+                            <!-- Tarjeta del Taller -->
+                            <div class="p-3 p-md-4 rounded-3 border mb-4" style="background-color: #f8fafc; border-color: #cbd5e1 !important;">
+                                <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom">
+                                    <span class="badge bg-primary px-2 py-1 font-monospace">@item.WorkshopCode</span>
+                                    <h5 class="fw-bold text-dark mb-0">@item.WorkshopTitle</h5>
+                                </div>
+                                <div class="row g-3 pt-2">
+                                    <div class="col-sm-4">
+                                        <div class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Instructor(a) Responsable</div>
+                                        <div class="fw-semibold text-dark small">@item.InstructorName</div>
+                                        <div class="text-muted" style="font-size: 0.7rem;">Facilitador Especialista</div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Fecha y Horario Programado</div>
+                                        @if (item.StartDate.HasValue && item.EndDate.HasValue)
+                                        {
+                                            <div class="fw-semibold text-dark small">@item.StartDate.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm") - @item.EndDate.Value.ToLocalTime().ToString("HH:mm")</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="fw-semibold text-dark small">Horario Asignado</div>
+                                        }
+                                        <div class="text-muted" style="font-size: 0.7rem;">Sesión Presencial de 4 Horas</div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Modalidad y Sede</div>
+                                        <div class="fw-semibold text-dark small">Presencial • Campus SkillHub</div>
+                                        <div class="text-muted" style="font-size: 0.7rem;">Medellín, Colombia</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Firmas y Sello de Seguridad -->
+                            <div class="row align-items-center pt-3 g-3">
+                                <div class="col-4 text-center">
+                                    <div class="border-top border-secondary pt-2">
+                                        <div class="fw-bold text-dark" style="font-size: 0.75rem;">Dirección de Capacitación</div>
+                                        <div class="text-muted" style="font-size: 0.68rem;">SkillHub Centro de Formación</div>
+                                        <div class="text-success fst-italic" style="font-size: 0.65rem;">✓ Firma Digitalizada</div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="p-2 rounded border bg-light">
+                                        <div class="fw-bold text-dark" style="font-size: 0.68rem;">SELLO DIGITAL OFICIAL</div>
+                                        <i class="bi bi-shield-check text-success fs-5"></i>
+                                        <div class="font-monospace text-muted" style="font-size: 0.62rem;">@item.Id.ToString().Substring(0, 16)...</div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="border-top border-secondary pt-2">
+                                        <div class="fw-bold text-dark" style="font-size: 0.75rem;">@item.InstructorName</div>
+                                        <div class="text-muted" style="font-size: 0.68rem;">Instructor(a) Titular</div>
+                                        <div class="text-success fst-italic" style="font-size: 0.65rem;">✓ Registro Aprobado</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Metadatos de Pie de Constancia -->
+                            <div class="border-top pt-3 mt-4 d-flex flex-column flex-sm-row justify-content-between align-items-center text-muted" style="font-size: 0.7rem;">
+                                <div>
+                                    Fecha de Inscripción: @item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")
+                                </div>
+                                <div class="font-monospace">
+                                    ID Constancia: @item.Id
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Footer con acciones -->
+                    <div class="modal-footer bg-white border-top px-4 py-3 d-flex flex-wrap justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold" onclick="printCertificate('certificate-print-@item.Id')">
+                            <i class="bi bi-printer me-1"></i> Imprimir Constancia
+                        </button>
+                        <div class="d-flex gap-2">
+                            <a asp-action="Certificate" asp-route-id="@item.Id" target="_blank" class="btn btn-outline-primary btn-sm fw-semibold">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> Abrir en Pestaña
+                            </a>
+                            <a asp-action="Certificate" asp-route-id="@item.Id" asp-route-download="true" class="btn btn-success btn-sm fw-semibold shadow-sm">
+                                <i class="bi bi-file-earmark-pdf-fill me-1"></i> Descargar PDF Oficial
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    <script>
+        function printCertificate(elementId) {
+            var printContents = document.getElementById(elementId).innerHTML;
+            var printWindow = window.open('', '', 'height=750,width=950');
+            printWindow.document.write('<html><head><title>Constancia Oficial - SkillHub</title>');
+            printWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">');
+            printWindow.document.write('<style>body { padding: 30px; font-family: system-ui, -apple-system, sans-serif; } @@media print { body { padding: 0; } }</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(printContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(function () {
+                printWindow.print();
+                printWindow.close();
+            }, 600);
+        }
+    </script>
 }

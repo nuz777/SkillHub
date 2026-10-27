@@ -67,7 +67,7 @@ public class EnrollmentsController(IEnrollmentService enrollmentService) : Contr
     }
 
     [HttpGet]
-    public async Task<IActionResult> Certificate(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Certificate(Guid id, [FromQuery] bool download = false, CancellationToken cancellationToken = default)
     {
         var userEmail = User.FindFirstValue(ClaimTypes.Email) 
                         ?? User.FindFirstValue(ClaimTypes.Name) 
@@ -78,7 +78,13 @@ public class EnrollmentsController(IEnrollmentService enrollmentService) : Contr
         try
         {
             var pdfBytes = await enrollmentService.GetCertificatePdfAsync(id, userEmail, isEmployee, cancellationToken);
-            return File(pdfBytes, "application/pdf", $"Constancia-Inscripcion-{id}.pdf");
+            if (download)
+            {
+                return File(pdfBytes, "application/pdf", $"Constancia-Inscripcion-{id}.pdf");
+            }
+
+            Response.Headers.Append("Content-Disposition", $"inline; filename=Constancia-Inscripcion-{id}.pdf");
+            return File(pdfBytes, "application/pdf");
         }
         catch (BusinessRuleException ex)
         {

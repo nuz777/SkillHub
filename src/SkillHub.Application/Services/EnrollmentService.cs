@@ -381,7 +381,9 @@ public class EnrollmentService(
             CreatedAt: e.CreatedAt,
             CancelledAt: e.CancelledAt,
             CancelledBy: e.CancelledBy,
-            CanCancel: canCancel
+            CanCancel: canCancel,
+            StartDate: workshop?.StartDate,
+            EndDate: workshop?.EndDate
         );
     }
 }

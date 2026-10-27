@@ -15,7 +15,9 @@ public record EnrollmentDto(
     DateTime CreatedAt,
     DateTime? CancelledAt,
     string? CancelledBy,
-    bool CanCancel
+    bool CanCancel,
+    DateTime? StartDate = null,
+    DateTime? EndDate = null
 );
 
 public record CreateEnrollmentDto(
