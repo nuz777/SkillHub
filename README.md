@@ -78,19 +78,32 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzNDAxZTY5OS0xYTA3LTQyZjgtODQ
 - [JetBrains Rider](https://www.jetbrains.com/rider/) (or Visual Studio / VS Code)
 - [PostgreSQL](https://www.postgresql.org/) running locally or in Docker.
 
-### 2. Database Setup
-Create a PostgreSQL database named `skillhub_db`:
+### 2. Database Setup (Dockerized PostgreSQL - `SkillHubDb`)
+Start the PostgreSQL container named **`SkillHubDb`** with automatic schema and seed data initialization:
+
 ```bash
-createdb -U postgres -h localhost skillhub_db
+# Option A: Using Docker Compose (Recommended)
+docker compose up -d
+
+# Option B: Direct Docker CLI command
+docker run -d \
+  --name SkillHubDb \
+  -p 5432:5432 \
+  -e POSTGRES_DB=SkillHubDb \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -v skillhub_postgres_data:/var/lib/postgresql/data \
+  -v $(pwd)/skillhub_database.sql:/docker-entrypoint-initdb.d/01-init.sql \
+  postgres:16-alpine
 ```
-*(Or execute the provided [skillhub_database.sql](skillhub_database.sql) script directly in PostgreSQL/pgAdmin/DBeaver).*
 
 Verify the connection string in `SkillHub.Api/appsettings.json` and `SkillHub.Web/appsettings.json`:
 ```json
 "ConnectionStrings": {
-  "DefaultConnection": "Host=localhost;Port=5432;Database=skillhub_db;Username=postgres;Password=postgres"
+  "DefaultConnection": "Host=localhost;Port=5432;Database=SkillHubDb;Username=postgres;Password=postgres"
 }
 ```
+*(Automatic Resiliency: If PostgreSQL on port 5432 is not running, EF Core automatically falls back to SQLite `skillhub.db` in the solution root without crashing).*
 
 ### 3. Running with JetBrains Rider
 1. Open the solution file: **`SkillHub.sln`**.
