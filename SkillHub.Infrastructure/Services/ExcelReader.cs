@@ -5,30 +5,6 @@ namespace SkillHub.Infrastructure.Services;
 
 public class ExcelReader : IExcelReader
 {
-    static ExcelReader()
-    {
-        try
-        {
-            var prop = typeof(ExcelPackage).GetProperty("License");
-            if (prop != null)
-            {
-                if (prop.PropertyType.IsEnum)
-                {
-                    var val = Enum.Parse(prop.PropertyType, "NonCommercial");
-                    prop.SetValue(null, val);
-                }
-                else if (prop.PropertyType == typeof(string))
-                {
-                    prop.SetValue(null, "NonCommercial");
-                }
-            }
-        }
-        catch
-        {
-            // Seguro ante variaciones de versión de EPPlus
-        }
-    }
-
     public async Task<IReadOnlyList<(int RowNumber, string ParticipantEmail, string WorkshopCode)>> ReadEnrollmentRowsAsync(
         Stream fileStream,
         CancellationToken cancellationToken = default)
