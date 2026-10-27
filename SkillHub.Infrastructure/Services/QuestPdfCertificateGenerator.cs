@@ -75,13 +75,13 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                         details.Item().Text(text =>
                         {
                             text.Span("Fecha y Horario: ").Bold();
-                            text.Span($"{data.StartDate:dd/MM/yyyy HH:mm} - {data.EndDate:dd/MM/yyyy HH:mm} (UTC)");
+                            text.Span($"{data.StartDate:dd/MM/yyyy HH:mm} - {data.EndDate:dd/MM/yyyy HH:mm}");
                         });
 
                         details.Item().Text(text =>
                         {
                             text.Span("Fecha de Inscripción: ").Bold();
-                            text.Span($"{data.EnrollmentDate:dd/MM/yyyy HH:mm} (UTC)");
+                            text.Span($"{data.EnrollmentDate:dd/MM/yyyy HH:mm}");
                         });
                     });
 
@@ -89,7 +89,7 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                     column.Item().AlignRight().Text(text =>
                     {
                         text.Span("Fecha de generación del documento: ").Bold();
-                        text.Span($"{data.GeneratedAt:dd/MM/yyyy HH:mm:ss} UTC");
+                        text.Span($"{data.GeneratedAt:dd/MM/yyyy HH:mm:ss}");
                     });
 
                     column.Item().AlignRight().Text($"ID de Constancia: {data.EnrollmentId}")

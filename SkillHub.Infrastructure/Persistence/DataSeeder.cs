@@ -103,7 +103,7 @@ public static class DataSeeder
             var andres = await context.Instructors.FirstAsync(i => i.Email == "andres.torres@skillhub.com");
             var sofia = await context.Instructors.FirstAsync(i => i.Email == "sofia.morales@skillhub.com");
 
-            var baseDate = DateTime.UtcNow.Date.AddDays(7);
+            var baseDate = DateTime.Now.Date.AddDays(7);
 
             var initialWorkshops = new List<Workshop>
             {

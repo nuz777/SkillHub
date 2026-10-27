@@ -41,7 +41,7 @@ public class WorkshopsController(
                     ?? string.Empty;
 
         // Sugerir fecha por defecto para facilitar creación (7 días en el futuro)
-        var defaultStart = DateTime.UtcNow.Date.AddDays(7).AddHours(9);
+        var defaultStart = DateTime.Now.Date.AddDays(7).AddHours(9);
         var defaultEnd = defaultStart.AddHours(4);
 
         ViewBag.DefaultStart = defaultStart.ToString("yyyy-MM-ddTHH:mm");

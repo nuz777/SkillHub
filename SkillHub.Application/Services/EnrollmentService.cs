@@ -45,7 +45,7 @@ public class EnrollmentService(
             ParticipantName = user.Value.FullName,
             ParticipantEmail = normalizedEmail,
             Status = EnrollmentStatus.Active,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now
         };
 
         var created = await enrollmentRepository.AddAsync(enrollment, cancellationToken);
@@ -153,7 +153,7 @@ public class EnrollmentService(
                     ParticipantName = user.Value.FullName,
                     ParticipantEmail = participantEmail,
                     Status = EnrollmentStatus.Active,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 };
 
                 await enrollmentRepository.AddAsync(enrollment, cancellationToken);
@@ -222,7 +222,7 @@ public class EnrollmentService(
             StartDate: workshop.StartDate,
             EndDate: workshop.EndDate,
             EnrollmentDate: enrollment.CreatedAt,
-            GeneratedAt: DateTime.UtcNow
+            GeneratedAt: DateTime.Now
         );
 
         return await certificatePdfGenerator.GenerateAsync(certificateData, cancellationToken);
