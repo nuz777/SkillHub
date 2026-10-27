@@ -10,6 +10,7 @@ namespace SkillHub.Application.Services;
 public class EnrollmentService(
     IEnrollmentRepository enrollmentRepository,
     IWorkshopRepository workshopRepository,
+    IInstructorRepository instructorRepository,
     IUserLookupService userLookupService,
     IExcelReader excelReader,
     ICertificatePdfGenerator certificatePdfGenerator) : IEnrollmentService
@@ -96,9 +97,103 @@ public class EnrollmentService(
 
     public async Task<ImportEnrollmentsResultDto> ImportFromExcelAsync(Stream fileStream, string employeeEmail, CancellationToken cancellationToken = default)
     {
-        var rows = await excelReader.ReadEnrollmentRowsAsync(fileStream, cancellationToken);
+        // Asegurar que el stream esté en memoria y sea Seekable para permitir múltiples lecturas (Workshops e Enrollments)
+        MemoryStream memoryStream;
+        if (fileStream is MemoryStream ms)
+        {
+            memoryStream = ms;
+            memoryStream.Position = 0;
+        }
+        else
+        {
+            memoryStream = new MemoryStream();
+            await fileStream.CopyToAsync(memoryStream, cancellationToken);
+            memoryStream.Position = 0;
+        }
+
+        // 1. Leer y sincronizar talleres definidos en el archivo Excel hacia el catálogo de la plataforma
+        var workshopRows = await excelReader.ReadWorkshopRowsAsync(memoryStream, cancellationToken);
+        var baseDate = DateTime.UtcNow.Date.AddDays(7);
+        var allInstructors = (await instructorRepository.GetAllAsync(cancellationToken)).ToList();
+        var fallbackInstructor = allInstructors.FirstOrDefault();
+
+        foreach (var wRow in workshopRows)
+        {
+            try
+            {
+                var normCode = wRow.Code.Trim().ToUpperInvariant();
+                var existing = await workshopRepository.GetByCodeAsync(normCode, cancellationToken);
+
+                // Resolver instructor
+                var instructor = !string.IsNullOrWhiteSpace(wRow.InstructorEmail)
+                    ? await instructorRepository.GetByEmailAsync(wRow.InstructorEmail.Trim().ToLowerInvariant(), cancellationToken)
+                    : null;
+                instructor ??= fallbackInstructor;
+
+                var start = wRow.StartDate ?? DateTime.SpecifyKind(baseDate.AddDays(wRow.RowNumber).AddHours(10), DateTimeKind.Utc);
+                var end = wRow.EndDate ?? DateTime.SpecifyKind(start.AddHours(4), DateTimeKind.Utc);
+                if (start <= DateTime.UtcNow)
+                {
+                    start = DateTime.SpecifyKind(baseDate.AddDays(wRow.RowNumber).AddHours(10), DateTimeKind.Utc);
+                    end = DateTime.SpecifyKind(start.AddHours(4), DateTimeKind.Utc);
+                }
+
+                var cap = (wRow.Capacity.HasValue && wRow.Capacity.Value > 0) ? wRow.Capacity.Value : 15;
+
+                if (existing != null)
+                {
+                    existing.Title = wRow.Title.Trim();
+                    if (!string.IsNullOrWhiteSpace(wRow.Description))
+                        existing.Description = wRow.Description.Trim();
+                    if (instructor != null)
+                    {
+                        existing.InstructorId = instructor.Id;
+                        existing.InstructorEmail = instructor.Email;
+                    }
+                    existing.StartDate = start;
+                    existing.EndDate = end;
+                    existing.MaxCapacity = cap;
+                    await workshopRepository.UpdateAsync(existing, cancellationToken);
+                }
+                else if (instructor != null)
+                {
+                    var newW = new Workshop
+                    {
+                        Code = normCode,
+                        Title = wRow.Title.Trim(),
+                        Description = wRow.Description?.Trim() ?? string.Empty,
+                        InstructorId = instructor.Id,
+                        InstructorEmail = instructor.Email,
+                        StartDate = start,
+                        EndDate = end,
+                        MaxCapacity = cap,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await workshopRepository.AddAsync(newW, cancellationToken);
+                }
+            }
+            catch
+            {
+                // Continuar con los siguientes talleres
+            }
+        }
+
+        // 2. Leer inscripciones del archivo Excel
+        memoryStream.Position = 0;
+        var rows = await excelReader.ReadEnrollmentRowsAsync(memoryStream, cancellationToken);
         var rejectedRows = new List<ImportEnrollmentRowErrorDto>();
         var successfulCount = 0;
+
+        // Si el archivo sólo contenía talleres sin filas de inscripción, retornar éxito por los talleres procesados
+        if (rows.Count == 0 && workshopRows.Count > 0)
+        {
+            return new ImportEnrollmentsResultDto(
+                TotalProcessed: workshopRows.Count,
+                SuccessfulCount: workshopRows.Count,
+                RejectedCount: 0,
+                RejectedRows: []
+            );
+        }
 
         foreach (var row in rows)
         {

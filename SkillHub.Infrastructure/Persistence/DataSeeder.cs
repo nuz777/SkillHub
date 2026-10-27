@@ -378,9 +378,12 @@ public static class DataSeeder
             }
 
             // Hoja Workshops
-            var workWs = package.Workbook.Worksheets["Workshops"];
+            var workWs = package.Workbook.Worksheets["Workshops"] ?? package.Workbook.Worksheets["Talleres"];
             if (workWs?.Dimension != null)
             {
+                var baseD = DateTime.UtcNow.Date.AddDays(7);
+                var defaultInst = await context.Instructors.FirstOrDefaultAsync();
+
                 for (int row = 2; row <= workWs.Dimension.Rows; row++)
                 {
                     var code = workWs.Cells[row, 1].Text.Trim().ToUpperInvariant();
@@ -388,30 +391,35 @@ public static class DataSeeder
                     var desc = workWs.Cells[row, 3].Text.Trim();
                     var instEmail = workWs.Cells[row, 4].Text.Trim().ToLowerInvariant();
 
-                    if (!allowedCodes.Contains(code)) continue;
-                    
-                    if (DateTime.TryParse(workWs.Cells[row, 5].Text, out var start) &&
-                        DateTime.TryParse(workWs.Cells[row, 6].Text, out var end) &&
-                        int.TryParse(workWs.Cells[row, 7].Text, out var cap))
+                    if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(title)) continue;
+
+                    DateTime start = baseD.AddDays(row).AddHours(10);
+                    DateTime end = start.AddHours(4);
+
+                    if (DateTime.TryParse(workWs.Cells[row, 5].Text, out var s))
+                        start = DateTime.SpecifyKind(s.ToUniversalTime(), DateTimeKind.Utc);
+                    if (DateTime.TryParse(workWs.Cells[row, 6].Text, out var e))
+                        end = DateTime.SpecifyKind(e.ToUniversalTime(), DateTimeKind.Utc);
+
+                    if (!int.TryParse(workWs.Cells[row, 7].Text, out var cap) || cap <= 0)
+                        cap = 15;
+
+                    var existing = await context.Workshops.FirstOrDefaultAsync(w => w.Code == code);
+                    var instructor = await context.Instructors.FirstOrDefaultAsync(i => i.Email == instEmail) ?? defaultInst;
+
+                    if (existing == null && instructor != null)
                     {
-                        if (!await context.Workshops.AnyAsync(w => w.Code == code))
+                        context.Workshops.Add(new Workshop
                         {
-                            var instructor = await context.Instructors.FirstOrDefaultAsync(i => i.Email == instEmail);
-                            if (instructor != null)
-                            {
-                                context.Workshops.Add(new Workshop
-                                {
-                                    Code = code,
-                                    Title = title,
-                                    Description = desc,
-                                    InstructorId = instructor.Id,
-                                    InstructorEmail = instructor.Email,
-                                    StartDate = DateTime.SpecifyKind(start.ToUniversalTime(), DateTimeKind.Utc),
-                                    EndDate = DateTime.SpecifyKind(end.ToUniversalTime(), DateTimeKind.Utc),
-                                    MaxCapacity = cap
-                                });
-                            }
-                        }
+                            Code = code,
+                            Title = title,
+                            Description = desc,
+                            InstructorId = instructor.Id,
+                            InstructorEmail = instructor.Email,
+                            StartDate = start,
+                            EndDate = end,
+                            MaxCapacity = cap
+                        });
                     }
                 }
                 await context.SaveChangesAsync();
