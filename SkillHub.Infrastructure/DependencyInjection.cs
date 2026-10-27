@@ -33,8 +33,15 @@ public static class DependencyInjection
             }
             else
             {
-                // Fallback automático para garantizar que funcione al 100% sin importar el estado del contenedor PostgreSQL
-                options.UseSqlite("Data Source=skillhub.db");
+                // Fallback automático compartido entre Api y Web
+                var currentDir = Directory.GetCurrentDirectory();
+                var solutionDir = currentDir.EndsWith("SkillHub.Api", StringComparison.OrdinalIgnoreCase) ||
+                                  currentDir.EndsWith("SkillHub.Web", StringComparison.OrdinalIgnoreCase)
+                    ? Directory.GetParent(currentDir)?.FullName ?? currentDir
+                    : currentDir;
+
+                var dbFile = Path.Combine(solutionDir, "skillhub.db");
+                options.UseSqlite($"Data Source={dbFile}");
             }
         });
 

@@ -42,4 +42,18 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Workshops}/{action=Index}/{id?}");
 
+// Inicialización de la base de datos y datos iniciales (Seed)
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await db.Database.EnsureCreatedAsync();
+    await DataSeeder.SeedAsync(app.Services);
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "Error conectando o inicializando la base de datos: {Message}", ex.Message);
+}
+
 app.Run();
