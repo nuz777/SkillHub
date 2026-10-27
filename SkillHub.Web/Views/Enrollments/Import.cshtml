@@ -29,17 +29,22 @@
                 </div>
 
                 <!-- Template Download Card -->
-                <div class="p-3 rounded-3 bg-light border d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-4">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-3"></i>
+                <div class="p-3 rounded-3 bg-light border d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-2"></i>
                         <div>
-                            <div class="fw-bold text-dark small">Archivo Excel de Prueba Listo</div>
-                            <div class="text-muted" style="font-size: 0.78rem;">Contiene filas con casos válidos y casos límite para testear.</div>
+                            <div class="fw-bold text-dark">Archivos Excel Disponibles</div>
+                            <div class="text-muted small">Descarga el catálogo de los 6 talleres activos o la plantilla con casos de prueba.</div>
                         </div>
                     </div>
-                    <a href="/sample_enrollments.xlsx" download="sample_enrollments.xlsx" class="btn btn-sm btn-outline-success fw-semibold px-3 text-nowrap">
-                        <i class="bi bi-download me-1"></i> Descargar Plantilla .xlsx
-                    </a>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="/talleres.xlsx" download="talleres.xlsx" class="btn btn-sm btn-success fw-semibold px-3 text-nowrap shadow-sm">
+                            <i class="bi bi-journal-text me-1"></i> Descargar Talleres .xlsx
+                        </a>
+                        <a href="/sample_enrollments.xlsx" download="sample_enrollments.xlsx" class="btn btn-sm btn-outline-success fw-semibold px-3 text-nowrap">
+                            <i class="bi bi-download me-1"></i> Plantilla Completa .xlsx
+                        </a>
+                    </div>
                 </div>
 
                 <div class="alert alert-light border border-primary-subtle bg-primary-subtle bg-opacity-10 text-dark small rounded-3 mb-4 p-3">
