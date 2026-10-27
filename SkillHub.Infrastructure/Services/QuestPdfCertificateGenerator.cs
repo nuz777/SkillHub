@@ -11,6 +11,7 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
     static QuestPdfCertificateGenerator()
     {
         QuestPDF.Settings.License = LicenseType.Community;
+        QuestPDF.Settings.ThrowOnMissingFontFamilies = false;
     }
 
     public Task<byte[]> GenerateAsync(CertificateDataDto data, CancellationToken cancellationToken = default)
@@ -21,7 +22,7 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
             {
                 page.Size(PageSizes.A4.Landscape());
                 page.Margin(40);
-                page.DefaultTextStyle(x => x.FontFamily("Arial").FontSize(11).FontColor(Colors.Grey.Darken3));
+                page.DefaultTextStyle(x => x.FontFamily("Lato").FontSize(11).FontColor(Colors.Grey.Darken3));
 
                 // Borde decorativo
                 page.Content().Border(3).BorderColor("#0d6efd").Padding(30).Column(column =>

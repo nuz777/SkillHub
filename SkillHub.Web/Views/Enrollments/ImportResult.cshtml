@@ -1,0 +1,84 @@
+@model SkillHub.Application.DTOs.ImportEnrollmentsResultDto
+@{
+    ViewData["Title"] = "Resultado de la Importación Masiva";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <a asp-action="Import" class="btn btn-link text-decoration-none px-0 mb-3">
+            <i class="bi bi-arrow-left me-1"></i> Cargar otro archivo
+        </a>
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4 p-md-5">
+                <h3 class="fw-bold text-dark mb-4">
+                    <i class="bi bi-clipboard-check text-primary me-2"></i>Resumen de Importación
+                </h3>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-light border-0 text-center py-3">
+                            <div class="text-muted small">Total Procesadas</div>
+                            <div class="display-6 fw-bold text-dark">@Model.TotalProcessed</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-success-subtle border-0 text-center py-3">
+                            <div class="text-success small fw-semibold">Inscritas Exitosamente</div>
+                            <div class="display-6 fw-bold text-success">@Model.SuccessfulCount</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-danger-subtle border-0 text-center py-3">
+                            <div class="text-danger small fw-semibold">Filas Rechazadas</div>
+                            <div class="display-6 fw-bold text-danger">@Model.RejectedCount</div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.RejectedRows.Any())
+                {
+                    <h5 class="fw-bold text-danger mb-3">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>Detalle de Filas Rechazadas:
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle small mb-0">
+                            <thead class="table-danger text-danger">
+                                <tr>
+                                    <th style="width: 80px;">Fila #</th>
+                                    <th>Participante</th>
+                                    <th>Código Taller</th>
+                                    <th>Motivo del Rechazo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var err in Model.RejectedRows)
+                                {
+                                    <tr>
+                                        <td class="text-center fw-bold">@err.RowNumber</td>
+                                        <td>@err.ParticipantEmail</td>
+                                        <td><span class="badge bg-secondary">@err.WorkshopCode</span></td>
+                                        <td class="text-danger">@err.Reason</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-success border-0 py-3">
+                        <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                        ¡Todas las filas del archivo Excel fueron validadas e inscritas exitosamente sin ningún rechazo!
+                    </div>
+                }
+
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-controller="Workshops" asp-action="Index" class="btn btn-primary px-4 fw-semibold">
+                        Ver Catálogo de Talleres
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
