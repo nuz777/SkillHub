@@ -158,8 +158,8 @@ public class EnrollmentService(
             {
                 rejectedRows.Add(new ImportEnrollmentRowErrorDto(
                     row.RowNumber,
-                    row.ParticipantEmail,
-                    row.WorkshopCode,
+                    row.ParticipantEmail ?? string.Empty,
+                    row.WorkshopCode ?? string.Empty,
                     ex.Message
                 ));
             }
@@ -167,8 +167,8 @@ public class EnrollmentService(
             {
                 rejectedRows.Add(new ImportEnrollmentRowErrorDto(
                     row.RowNumber,
-                    row.ParticipantEmail,
-                    row.WorkshopCode,
+                    row.ParticipantEmail ?? string.Empty,
+                    row.WorkshopCode ?? string.Empty,
                     $"Error al procesar la fila: {ex.Message}"
                 ));
             }

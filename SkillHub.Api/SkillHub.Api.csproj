@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>SkillHub.Api</RootNamespace>
+        <NoWarn>$(NoWarn);NU1902;NU1903;CS0618</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

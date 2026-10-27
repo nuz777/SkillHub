@@ -1,3 +1,4 @@
+#pragma warning disable CS0618
 using OfficeOpenXml;
 using SkillHub.Application.Interfaces;
 

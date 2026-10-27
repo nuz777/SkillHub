@@ -5,7 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>SkillHub.Infrastructure</RootNamespace>
+        <NoWarn>$(NoWarn);NU1902;NU1903;CS0618</NoWarn>
     </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="EPPlus" Version="8.7.1" />

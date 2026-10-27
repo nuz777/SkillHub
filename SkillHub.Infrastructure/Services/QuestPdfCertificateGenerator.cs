@@ -21,11 +21,13 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
             {
                 page.Size(PageSizes.A4.Landscape());
                 page.Margin(40);
-                page.DefaultTextStyle(x => x.FontFamily(Fonts.Arial).FontSize(11).FontColor(Colors.Grey.Darken3));
+                page.DefaultTextStyle(x => x.FontFamily("Arial").FontSize(11).FontColor(Colors.Grey.Darken3));
 
                 // Borde decorativo
                 page.Content().Border(3).BorderColor("#0d6efd").Padding(30).Column(column =>
                 {
+                    column.Spacing(10);
+
                     // Encabezado
                     column.Item().AlignCenter().Text("SkillHub")
                         .Bold().FontSize(28).FontColor("#0d6efd");
@@ -33,13 +35,13 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                     column.Item().AlignCenter().Text("Centro de Formación Presencial")
                         .FontSize(12).FontColor(Colors.Grey.Medium);
 
-                    column.Item().PaddingVertical(15).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
+                    column.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
                     // Título Oficial Requerido
                     column.Item().AlignCenter().Text("Constancia de inscripción")
                         .Bold().FontSize(22).FontColor(Colors.Grey.Darken4);
 
-                    column.Item().PaddingTop(15).AlignCenter().Text(text =>
+                    column.Item().PaddingTop(10).AlignCenter().Text(text =>
                     {
                         text.Span("Por medio de la presente, se certifica que ").FontSize(12);
                         text.Span(data.ParticipantName).Bold().FontSize(14).FontColor("#0d6efd");
@@ -48,7 +50,7 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                     });
 
                     // Detalles del Taller
-                    column.Item().PaddingVertical(20).Background(Colors.Grey.Lighten4).Padding(15).Column(details =>
+                    column.Item().PaddingVertical(15).Background(Colors.Grey.Lighten4).Padding(15).Column(details =>
                     {
                         details.Spacing(6);
                         details.Item().Text(text =>
@@ -81,8 +83,6 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                             text.Span($"{data.EnrollmentDate:dd/MM/yyyy HH:mm} (UTC)");
                         });
                     });
-
-                    column.Item().Spacing(5);
 
                     // Pie de página con fecha de generación e ID
                     column.Item().AlignRight().Text(text =>
