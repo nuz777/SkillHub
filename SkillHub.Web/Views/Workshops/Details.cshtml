@@ -122,32 +122,33 @@
     </div>
 </div>
 
-<!-- Modal Confirmación Eliminar Taller -->
 @if (User.IsInRole(UserRoles.Employee) && isInstructorOwner)
 {
-    <div class="modal fade" id="deleteWorkshopModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold text-danger">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Eliminar Taller
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body py-3">
-                    <p class="mb-2">¿Estás seguro de que deseas eliminar permanentemente el taller <strong>@Model.Title</strong> (<code>@Model.Code</code>)?</p>
-                    <p class="text-muted small mb-0">Esta acción no se puede deshacer. Solo es posible eliminar talleres que no hayan iniciado y no cuenten con participantes inscritos.</p>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Cancelar</button>
-                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="m-0">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger btn-sm px-3 fw-semibold">
-                            Confirmar Eliminación
-                        </button>
-                    </form>
+    @section Modals {
+        <div class="modal fade" id="deleteWorkshopModal" tabindex="-1" aria-labelledby="deleteWorkshopModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title fw-bold text-danger" id="deleteWorkshopModalLabel">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>Eliminar Taller
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body py-3">
+                        <p class="mb-2">¿Estás seguro de que deseas eliminar permanentemente el taller <strong>@Model.Title</strong> (<code>@Model.Code</code>)?</p>
+                        <p class="text-muted small mb-0">Esta acción no se puede deshacer. Solo es posible eliminar talleres que no hayan iniciado y no cuenten con participantes inscritos.</p>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Cancelar</button>
+                        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="m-0">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm px-3 fw-semibold">
+                                Confirmar Eliminación
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 }

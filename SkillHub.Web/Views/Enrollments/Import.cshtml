@@ -82,31 +82,33 @@
     </div>
 </div>
 
-<!-- Modal Confirmación para Limpiar Inscripciones -->
-<div class="modal fade" id="clearEnrollmentsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold text-danger">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Limpiar Inscripciones de Prueba
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body py-3">
-                <p class="mb-2">¿Estás seguro de que deseas eliminar todas las inscripciones registradas en el sistema?</p>
-                <div class="alert alert-warning border-0 small mb-0">
-                    <i class="bi bi-info-circle me-1"></i> Esta acción restablecerá los cupos de todos los talleres para que puedas volver a cargar el archivo Excel cuantas veces desees sin conflictos de duplicidad.
+@section Modals {
+    <!-- Modal Confirmación para Limpiar Inscripciones -->
+    <div class="modal fade" id="clearEnrollmentsModal" tabindex="-1" aria-labelledby="clearEnrollmentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger" id="clearEnrollmentsModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Limpiar Inscripciones de Prueba
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Cancelar</button>
-                <form asp-action="ClearAll" method="post" class="m-0">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-danger btn-sm px-3 fw-semibold">
-                        <i class="bi bi-trash3-fill me-1"></i> Sí, Limpiar Inscripciones
-                    </button>
-                </form>
+                <div class="modal-body py-3">
+                    <p class="mb-2">¿Estás seguro de que deseas eliminar todas las inscripciones registradas en el sistema?</p>
+                    <div class="alert alert-warning border-0 small mb-0">
+                        <i class="bi bi-info-circle me-1"></i> Esta acción restablecerá los cupos de todos los talleres para que puedas volver a cargar el archivo Excel cuantas veces desees sin conflictos de duplicidad.
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Cancelar</button>
+                    <form asp-controller="Enrollments" asp-action="ClearAll" method="post" class="m-0">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm px-3 fw-semibold">
+                            <i class="bi bi-trash3-fill me-1"></i> Sí, Limpiar Inscripciones
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
