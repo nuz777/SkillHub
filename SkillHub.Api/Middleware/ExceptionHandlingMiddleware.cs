@@ -4,7 +4,10 @@ using SkillHub.Domain.Exceptions;
 
 namespace SkillHub.Api.Middleware;
 
-public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+public class ExceptionHandlingMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionHandlingMiddleware> logger,
+    IHostEnvironment env)
 {
     public async Task InvokeAsync(HttpContext context)
     {
@@ -25,11 +28,13 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         catch (Exception ex)
         {
             logger.LogError(ex, "Error no controlado en la API: {Message}", ex.Message);
-            await HandleExceptionAsync(context, (int)HttpStatusCode.InternalServerError, "Ocurrió un error inesperado en el servidor.");
+            var detail = env.IsDevelopment() ? ex.Message : null;
+            var inner = env.IsDevelopment() ? ex.InnerException?.Message : null;
+            await HandleExceptionAsync(context, (int)HttpStatusCode.InternalServerError, "Ocurrió un error inesperado en el servidor.", detail, inner);
         }
     }
 
-    private static async Task HandleExceptionAsync(HttpContext context, int statusCode, string message)
+    private static async Task HandleExceptionAsync(HttpContext context, int statusCode, string message, string? detail = null, string? inner = null)
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
@@ -38,6 +43,8 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         {
             statusCode,
             message,
+            detail,
+            inner,
             timestamp = DateTime.UtcNow
         };
 

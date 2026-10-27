@@ -128,20 +128,20 @@ app.MapGet("/health", () => Results.Ok(new
     timestamp = DateTime.UtcNow
 })).AllowAnonymous();
 
-// Migraciones y datos iniciales (Seed)
+// Inicialización de la base de datos y datos iniciales (Seed)
 if (app.Configuration.GetValue("Database:MigrateOnStartup", true))
 {
     try
     {
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        await db.Database.MigrateAsync();
+        await db.Database.EnsureCreatedAsync();
         await DataSeeder.SeedAsync(app.Services);
     }
     catch (Exception ex)
     {
         var logger = app.Services.GetRequiredService<ILogger<Program>>();
-        logger.LogWarning(ex, "Nota: No se pudo conectar a la base de datos para migraciones automáticas. Verifica la cadena de conexión en appsettings.json.");
+        logger.LogError(ex, "Error conectando o inicializando la base de datos: {Message}", ex.Message);
     }
 }
 
