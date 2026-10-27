@@ -262,6 +262,9 @@ public class EnrollmentService(
             throw new BusinessRuleException(
                 $"Cruce de horario: El participante ya está inscrito en el taller '{conflictingEnrollment.Workshop.Title}' ({conflictingEnrollment.Workshop.Code}), el cual se cruza con el horario de este taller ({workshop.StartDate:dd/MM/yyyy HH:mm} - {workshop.EndDate:HH:mm}).");
         }
+    public async Task<int> ClearAllEnrollmentsAsync(CancellationToken cancellationToken = default)
+    {
+        return await enrollmentRepository.ClearAllAsync(cancellationToken);
     }
 
     private static EnrollmentDto MapToDto(Enrollment e)

@@ -11,4 +11,5 @@ public interface IEnrollmentRepository
     Task<bool> HasActiveEnrollmentAsync(string participantEmail, Guid workshopId, CancellationToken cancellationToken = default);
     Task<Enrollment> AddAsync(Enrollment enrollment, CancellationToken cancellationToken = default);
     Task UpdateAsync(Enrollment enrollment, CancellationToken cancellationToken = default);
+    Task<int> ClearAllAsync(CancellationToken cancellationToken = default);
 }

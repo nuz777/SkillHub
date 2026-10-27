@@ -70,4 +70,13 @@ public class EnrollmentRepository(ApplicationDbContext context) : IEnrollmentRep
         context.Enrollments.Update(enrollment);
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<int> ClearAllAsync(CancellationToken cancellationToken = default)
+    {
+        var all = await context.Enrollments.ToListAsync(cancellationToken);
+        var count = all.Count;
+        context.Enrollments.RemoveRange(all);
+        await context.SaveChangesAsync(cancellationToken);
+        return count;
+    }
 }

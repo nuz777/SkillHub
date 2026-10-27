@@ -102,4 +102,13 @@ public class EnrollmentsController(IEnrollmentService enrollmentService) : Contr
         var pdfBytes = await enrollmentService.GetCertificatePdfAsync(id, userEmail, isEmployee, cancellationToken);
         return File(pdfBytes, "application/pdf", $"Constancia-Inscripcion-{id}.pdf");
     }
+
+    [HttpDelete("clear")]
+    [Authorize(Roles = UserRoles.Employee)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ClearAll(CancellationToken cancellationToken)
+    {
+        var count = await enrollmentService.ClearAllEnrollmentsAsync(cancellationToken);
+        return Ok(new { message = $"Se han limpiado {count} inscripciones exitosamente.", deletedCount = count });
+    }
 }

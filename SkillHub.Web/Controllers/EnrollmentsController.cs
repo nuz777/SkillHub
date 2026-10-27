@@ -121,4 +121,22 @@ public class EnrollmentsController(IEnrollmentService enrollmentService) : Contr
             return View();
         }
     }
+
+    [HttpPost]
+    [Authorize(Roles = UserRoles.Employee)]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ClearAll(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var count = await enrollmentService.ClearAllEnrollmentsAsync(cancellationToken);
+            TempData["Success"] = $"¡Se han limpiado {count} inscripciones exitosamente! Los cupos fueron restablecidos para una nueva importación masiva.";
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = $"Error al limpiar las inscripciones: {ex.Message}";
+        }
+
+        return RedirectToAction(nameof(Import));
+    }
 }

@@ -10,4 +10,5 @@ public interface IEnrollmentService
     Task<EnrollmentDto> CancelEnrollmentAsync(Guid enrollmentId, string requestedByEmail, bool isEmployee, CancellationToken cancellationToken = default);
     Task<ImportEnrollmentsResultDto> ImportFromExcelAsync(Stream fileStream, string employeeEmail, CancellationToken cancellationToken = default);
     Task<byte[]> GetCertificatePdfAsync(Guid enrollmentId, string requestedByEmail, bool isEmployee, CancellationToken cancellationToken = default);
+    Task<int> ClearAllEnrollmentsAsync(CancellationToken cancellationToken = default);
 }
