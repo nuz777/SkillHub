@@ -39,29 +39,23 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                         // 1. Encabezado Institucional
                         column.Item().Row(row =>
                         {
-                            row.RelativeItem(3).Column(headerLeft =>
+                            row.RelativeItem(3).Row(logoRow =>
                             {
-                                headerLeft.Row(logoRow =>
-                                {
-                                    logoRow.AutoItem().Background("#0F172A").PaddingHorizontal(10).PaddingVertical(4).Text("SKILLHUB")
-                                        .Bold().FontSize(15).FontColor(Colors.White);
+                                logoRow.AutoItem().Background("#0F172A").PaddingHorizontal(10).PaddingVertical(4).Text("SKILLHUB")
+                                    .Bold().FontSize(15).FontColor(Colors.White);
 
-                                    logoRow.RelativeItem().PaddingLeft(10).Column(c =>
-                                    {
-                                        c.Text("CENTRO DE FORMACIÓN PRESENCIAL").Bold().FontSize(9).FontColor("#0F172A");
-                                        c.Text("Acreditación y Registro Académico Continuo").FontSize(7.5f).FontColor("#64748B");
-                                    });
+                                logoRow.RelativeItem().PaddingLeft(10).Column(c =>
+                                {
+                                    c.Item().Text("CENTRO DE FORMACIÓN PRESENCIAL").Bold().FontSize(9).FontColor("#0F172A");
+                                    c.Item().Text("Acreditación y Registro Académico Continuo").FontSize(7.5f).FontColor("#64748B");
                                 });
                             });
 
-                            row.RelativeItem(2).AlignRight().Column(headerRight =>
+                            row.RelativeItem(2).AlignRight().Border(1).BorderColor("#CBD5E1").Background("#F8FAFC").PaddingHorizontal(10).PaddingVertical(4).Column(folio =>
                             {
-                                headerRight.Border(1).BorderColor("#CBD5E1").Background("#F8FAFC").PaddingHorizontal(10).PaddingVertical(4).Column(folio =>
-                                {
-                                    folio.Text("FOLIO OFICIAL DE CONSTANCIA").Bold().FontSize(7).FontColor("#64748B");
-                                    folio.Text($"SKH-2026-{data.EnrollmentId.ToString()[..8].ToUpperInvariant()}").Bold().FontSize(10).FontColor("#0F172A");
-                                    folio.Text("ESTADO: ACTIVA Y CONFIRMADA").Bold().FontSize(7.5f).FontColor("#059669");
-                                });
+                                folio.Item().Text("FOLIO OFICIAL DE CONSTANCIA").Bold().FontSize(7).FontColor("#64748B");
+                                folio.Item().Text($"SKH-2026-{data.EnrollmentId.ToString()[..8].ToUpperInvariant()}").Bold().FontSize(10).FontColor("#0F172A");
+                                folio.Item().Text("ESTADO: ACTIVA Y CONFIRMADA").Bold().FontSize(7.5f).FontColor("#059669");
                             });
                         });
 
@@ -70,8 +64,8 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                         // 2. Título Central Oficial
                         column.Item().AlignCenter().Column(titleCol =>
                         {
-                            titleCol.Text("CONSTANCIA OFICIAL DE INSCRIPCIÓN").Bold().FontSize(20).FontColor("#0F172A");
-                            titleCol.Text("Certificado de asignación formal de cupo presencial").Italic().FontSize(9.5f).FontColor("#475569");
+                            titleCol.Item().AlignCenter().Text("CONSTANCIA OFICIAL DE INSCRIPCIÓN").Bold().FontSize(20).FontColor("#0F172A");
+                            titleCol.Item().AlignCenter().Text("Certificado de asignación formal de cupo presencial").Italic().FontSize(9.5f).FontColor("#475569");
                         });
 
                         // 3. Declaración de Certificación
@@ -83,8 +77,8 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                         // 4. Nombre Destacado del Participante
                         column.Item().AlignCenter().Column(pCol =>
                         {
-                            pCol.Text(data.ParticipantName).Bold().FontSize(20).FontColor("#1E3A8A");
-                            pCol.Text($"Identificación Digital / Correo: {data.ParticipantEmail}").FontSize(9).FontColor("#64748B").Italic();
+                            pCol.Item().AlignCenter().Text(data.ParticipantName).Bold().FontSize(20).FontColor("#1E3A8A");
+                            pCol.Item().AlignCenter().Text($"Identificación Digital / Correo: {data.ParticipantEmail}").FontSize(9).FontColor("#64748B").Italic();
                         });
 
                         column.Item().AlignCenter().Text(t =>
@@ -95,7 +89,7 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                         // 5. Tarjeta de Detalles del Taller
                         column.Item().PaddingVertical(4).Border(1).BorderColor("#CBD5E1").Background("#F8FAFC").Padding(10).Column(card =>
                         {
-                            card.Row(topRow =>
+                            card.Item().Row(topRow =>
                             {
                                 topRow.AutoItem().Background("#1E3A8A").PaddingHorizontal(8).PaddingVertical(3).Text(data.WorkshopCode)
                                     .Bold().FontSize(10).FontColor(Colors.White);
@@ -106,27 +100,27 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
 
                             card.Item().PaddingVertical(4).LineHorizontal(1).LineColor("#E2E8F0");
 
-                            card.Row(metaRow =>
+                            card.Item().Row(metaRow =>
                             {
                                 metaRow.RelativeItem().Column(c1 =>
                                 {
-                                    c1.Text("INSTRUCTOR(A) RESPONSABLE").Bold().FontSize(7.5f).FontColor("#64748B");
-                                    c1.Text(data.InstructorName).Bold().FontSize(9.5f).FontColor("#0F172A");
-                                    c1.Text("Facilitador Especialista").FontSize(7.5f).FontColor("#64748B");
+                                    c1.Item().Text("INSTRUCTOR(A) RESPONSABLE").Bold().FontSize(7.5f).FontColor("#64748B");
+                                    c1.Item().Text(data.InstructorName).Bold().FontSize(9.5f).FontColor("#0F172A");
+                                    c1.Item().Text("Facilitador Especialista").FontSize(7.5f).FontColor("#64748B");
                                 });
 
                                 metaRow.RelativeItem().Column(c2 =>
                                 {
-                                    c2.Text("FECHA Y HORARIO").Bold().FontSize(7.5f).FontColor("#64748B");
-                                    c2.Text($"{data.StartDate:dd/MM/yyyy HH:mm} - {data.EndDate:dd/MM/yyyy HH:mm}").Bold().FontSize(9.5f).FontColor("#0F172A");
-                                    c2.Text("Sesión Presencial Programada").FontSize(7.5f).FontColor("#64748B");
+                                    c2.Item().Text("FECHA Y HORARIO").Bold().FontSize(7.5f).FontColor("#64748B");
+                                    c2.Item().Text($"{data.StartDate:dd/MM/yyyy HH:mm} - {data.EndDate:dd/MM/yyyy HH:mm}").Bold().FontSize(9.5f).FontColor("#0F172A");
+                                    c2.Item().Text("Sesión Presencial Programada").FontSize(7.5f).FontColor("#64748B");
                                 });
 
                                 metaRow.RelativeItem().Column(c3 =>
                                 {
-                                    c3.Text("SEDE Y MODALIDAD").Bold().FontSize(7.5f).FontColor("#64748B");
-                                    c3.Text("Presencial • Campus SkillHub").Bold().FontSize(9.5f).FontColor("#0F172A");
-                                    c3.Text("Medellín, Colombia").FontSize(7.5f).FontColor("#64748B");
+                                    c3.Item().Text("SEDE Y MODALIDAD").Bold().FontSize(7.5f).FontColor("#64748B");
+                                    c3.Item().Text("Presencial • Campus SkillHub").Bold().FontSize(9.5f).FontColor("#0F172A");
+                                    c3.Item().Text("Medellín, Colombia").FontSize(7.5f).FontColor("#64748B");
                                 });
                             });
                         });
@@ -136,29 +130,29 @@ public class QuestPdfCertificateGenerator : ICertificatePdfGenerator
                         {
                             sigRow.RelativeItem().Column(s1 =>
                             {
-                                s1.LineHorizontal(1).LineColor("#94A3B8");
+                                s1.Item().LineHorizontal(1).LineColor("#94A3B8");
                                 s1.Item().PaddingTop(2).Text("Dirección de Capacitación y Registro").Bold().FontSize(8).FontColor("#1E293B");
-                                s1.Text("SkillHub Centro de Formación").FontSize(7).FontColor("#64748B");
-                                s1.Text("✓ Firma Digitalizada y Validada").FontSize(7).Italic().FontColor("#059669");
+                                s1.Item().Text("SkillHub Centro de Formación").FontSize(7).FontColor("#64748B");
+                                s1.Item().Text("✓ Firma Digitalizada y Validada").FontSize(7).Italic().FontColor("#059669");
                             });
 
                             sigRow.ConstantItem(15);
 
                             sigRow.RelativeItem().Border(1).BorderColor("#CBD5E1").Background("#F1F5F9").Padding(5).Column(seal =>
                             {
-                                seal.AlignCenter().Text("SELLO DIGITAL OFICIAL").Bold().FontSize(7).FontColor("#0F172A");
-                                seal.AlignCenter().Text("VALIDACIÓN SISTÉMICA VIGENTE").Bold().FontSize(7.5f).FontColor("#059669");
-                                seal.AlignCenter().Text($"ID: {data.EnrollmentId}").FontSize(6).FontColor("#64748B");
+                                seal.Item().AlignCenter().Text("SELLO DIGITAL OFICIAL").Bold().FontSize(7).FontColor("#0F172A");
+                                seal.Item().AlignCenter().Text("VALIDACIÓN SISTÉMICA VIGENTE").Bold().FontSize(7.5f).FontColor("#059669");
+                                seal.Item().AlignCenter().Text($"ID: {data.EnrollmentId}").FontSize(6).FontColor("#64748B");
                             });
 
                             sigRow.ConstantItem(15);
 
                             sigRow.RelativeItem().Column(s2 =>
                             {
-                                s2.LineHorizontal(1).LineColor("#94A3B8");
+                                s2.Item().LineHorizontal(1).LineColor("#94A3B8");
                                 s2.Item().PaddingTop(2).Text(data.InstructorName).Bold().FontSize(8).FontColor("#1E293B");
-                                s2.Text("Instructor(a) Titular Asignado(a)").FontSize(7).FontColor("#64748B");
-                                s2.Text("✓ Confirmación de Asistencia en Sistema").FontSize(7).Italic().FontColor("#059669");
+                                s2.Item().Text("Instructor(a) Titular Asignado(a)").FontSize(7).FontColor("#64748B");
+                                s2.Item().Text("✓ Confirmación de Asistencia en Sistema").FontSize(7).Italic().FontColor("#059669");
                             });
                         });
 
