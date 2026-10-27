@@ -63,6 +63,12 @@ The database seeds initial employee (instructor) and participant accounts automa
 | **Participant** | Carlos López | `carlos.lopez@example.com` | `Participant123!` |
 | **Participant** | Ana Martínez | `ana.martinez@example.com` | `Participant123!` |
 
+### 🔑 Ready-to-Use JWT Bearer Token (Employee Admin)
+For convenience during evaluation or testing directly in **Scalar** (`/scalar`) or **Swagger UI** (`/swagger`):
+```text
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzNDAxZTY5OS0xYTA3LTQyZjgtODQwMC01NDkzOWY0NjQxNjciLCJlbWFpbCI6ImFkbWluQHNraWxsaHViLmNvbSIsInVuaXF1ZV9uYW1lIjoiQWRtaW4gU2tpbGxIdWIiLCJyb2xlIjoiRW1wbG95ZWUiLCJqdGkiOiI2ZjM0NTkyNy1lYTM4LTQzNGMtOTBhNS1mMmJhODFjMjVjYTgiLCJuYmYiOjE3OTMxMzA5MDAsImV4cCI6MTc5MzIxNzMwMCwiaWF0IjoxNzkzMTMwOTAwLCJpc3MiOiJTa2lsbEh1YiIsImF1ZCI6IlNraWxsSHViLlVzZXJzIn0.ZVFSM9yiIpax6lrUSj1sdBPMyo3BoQkC2OKSDyOnqnI
+```
+
 ---
 
 ## ⚙️ Setup & Execution Instructions
