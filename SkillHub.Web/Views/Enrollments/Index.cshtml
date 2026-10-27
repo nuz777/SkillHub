@@ -60,8 +60,8 @@ else
                                 <div class="small fw-semibold text-dark">@item.InstructorName</div>
                             </td>
                             <td>
-                                <div class="small text-muted">@item.CreatedAt.ToString("dd MMM yyyy")</div>
-                                <div class="text-muted" style="font-size: 0.72rem;">@item.CreatedAt.ToString("HH:mm")</div>
+                                <div class="small text-muted">@item.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">@item.CreatedAt.ToLocalTime().ToString("HH:mm")</div>
                             </td>
                             <td>
                                 @if (isActive)
@@ -78,7 +78,7 @@ else
                                     @if (item.CancelledAt.HasValue)
                                     {
                                         <div class="text-muted" style="font-size: 0.72rem;">
-                                            @item.CancelledAt.Value.ToString("dd/MM/yyyy HH:mm")
+                                            @item.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
                                         </div>
                                     }
                                 }

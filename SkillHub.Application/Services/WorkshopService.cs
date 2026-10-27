@@ -54,10 +54,10 @@ public class WorkshopService(
             InstructorId = instructor.Id,
             InstructorEmail = instructor.Email,
             Instructor = instructor,
-            StartDate = dto.StartDate,
-            EndDate = dto.EndDate,
+            StartDate = DateTime.SpecifyKind(dto.StartDate, DateTimeKind.Utc),
+            EndDate = DateTime.SpecifyKind(dto.EndDate, DateTimeKind.Utc),
             MaxCapacity = dto.MaxCapacity,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow
         };
 
         // Reglas de negocio del dominio
@@ -101,7 +101,7 @@ public class WorkshopService(
                 400);
         }
 
-        if (dto.StartDate <= DateTime.Now)
+        if (dto.StartDate.ToUniversalTime() <= DateTime.UtcNow)
         {
             throw new BusinessRuleException("La nueva fecha de inicio debe ser futura.", 400);
         }
@@ -113,10 +113,10 @@ public class WorkshopService(
 
         workshop.Title = dto.Title.Trim();
         workshop.Description = dto.Description?.Trim() ?? string.Empty;
-        workshop.StartDate = dto.StartDate;
-        workshop.EndDate = dto.EndDate;
+        workshop.StartDate = DateTime.SpecifyKind(dto.StartDate, DateTimeKind.Utc);
+        workshop.EndDate = DateTime.SpecifyKind(dto.EndDate, DateTimeKind.Utc);
         workshop.MaxCapacity = dto.MaxCapacity;
-        workshop.UpdatedAt = DateTime.Now;
+        workshop.UpdatedAt = DateTime.UtcNow;
 
         await workshopRepository.UpdateAsync(workshop, cancellationToken);
         return MapToDto(workshop);

@@ -103,7 +103,7 @@ public static class DataSeeder
             var andres = await context.Instructors.FirstAsync(i => i.Email == "andres.torres@skillhub.com");
             var sofia = await context.Instructors.FirstAsync(i => i.Email == "sofia.morales@skillhub.com");
 
-            var baseDate = DateTime.Now.Date.AddDays(7);
+            var baseDate = DateTime.UtcNow.Date.AddDays(7);
 
             var initialWorkshops = new List<Workshop>
             {
@@ -115,8 +115,8 @@ public static class DataSeeder
                     InstructorId = carlos.Id,
                     Instructor = carlos,
                     InstructorEmail = carlos.Email,
-                    StartDate = baseDate.AddHours(9),
-                    EndDate = baseDate.AddHours(13),
+                    StartDate = DateTime.SpecifyKind(baseDate.AddHours(9), DateTimeKind.Utc),
+                    EndDate = DateTime.SpecifyKind(baseDate.AddHours(13), DateTimeKind.Utc),
                     MaxCapacity = 15
                 },
                 new()
@@ -127,8 +127,8 @@ public static class DataSeeder
                     InstructorId = laura.Id,
                     Instructor = laura,
                     InstructorEmail = laura.Email,
-                    StartDate = baseDate.AddDays(1).AddHours(14),
-                    EndDate = baseDate.AddDays(1).AddHours(18),
+                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(1).AddHours(14), DateTimeKind.Utc),
+                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(1).AddHours(18), DateTimeKind.Utc),
                     MaxCapacity = 12
                 },
                 new()
@@ -139,8 +139,8 @@ public static class DataSeeder
                     InstructorId = andres.Id,
                     Instructor = andres,
                     InstructorEmail = andres.Email,
-                    StartDate = baseDate.AddDays(2).AddHours(10),
-                    EndDate = baseDate.AddDays(2).AddHours(14),
+                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(2).AddHours(10), DateTimeKind.Utc),
+                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(2).AddHours(14), DateTimeKind.Utc),
                     MaxCapacity = 20
                 },
                 new()
@@ -151,8 +151,8 @@ public static class DataSeeder
                     InstructorId = sofia.Id,
                     Instructor = sofia,
                     InstructorEmail = sofia.Email,
-                    StartDate = baseDate.AddDays(3).AddHours(15),
-                    EndDate = baseDate.AddDays(3).AddHours(19),
+                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(3).AddHours(15), DateTimeKind.Utc),
+                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(3).AddHours(19), DateTimeKind.Utc),
                     MaxCapacity = 18
                 }
             };
@@ -278,8 +278,8 @@ public static class DataSeeder
                                     Description = desc,
                                     InstructorId = instructor.Id,
                                     InstructorEmail = instructor.Email,
-                                    StartDate = start.ToUniversalTime(),
-                                    EndDate = end.ToUniversalTime(),
+                                    StartDate = DateTime.SpecifyKind(start.ToUniversalTime(), DateTimeKind.Utc),
+                                    EndDate = DateTime.SpecifyKind(end.ToUniversalTime(), DateTimeKind.Utc),
                                     MaxCapacity = cap
                                 });
                             }

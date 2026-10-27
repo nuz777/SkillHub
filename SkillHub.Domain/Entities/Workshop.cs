@@ -21,7 +21,7 @@ public class Workshop : BaseEntity
 
     public int ActiveEnrollmentsCount => Enrollments.Count(e => e.Status == EnrollmentStatus.Active);
     public int AvailableSpots => Math.Max(0, MaxCapacity - ActiveEnrollmentsCount);
-    public bool HasStarted => DateTime.Now >= StartDate;
+    public bool HasStarted => DateTime.UtcNow >= StartDate;
 
     public bool HasAvailableSpots() => AvailableSpots > 0;
 
@@ -41,7 +41,7 @@ public class Workshop : BaseEntity
         if (string.IsNullOrWhiteSpace(InstructorEmail))
             throw new BusinessRuleException("El correo del instructor es obligatorio.");
 
-        if (StartDate <= DateTime.Now)
+        if (StartDate <= DateTime.UtcNow)
             throw new BusinessRuleException("El taller debe programarse con una fecha futura.");
 
         if (EndDate <= StartDate)
@@ -53,11 +53,11 @@ public class Workshop : BaseEntity
 
     public bool CanBeCancelledByParticipant()
     {
-        return DateTime.Now <= StartDate.AddHours(-24);
+        return DateTime.UtcNow <= StartDate.AddHours(-24);
     }
 
     public bool CanBeCancelledByEmployee()
     {
-        return DateTime.Now < StartDate;
+        return DateTime.UtcNow < StartDate;
     }
 }

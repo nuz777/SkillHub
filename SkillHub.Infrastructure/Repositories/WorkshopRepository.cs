@@ -10,7 +10,7 @@ public class WorkshopRepository(ApplicationDbContext context) : IWorkshopReposit
 {
     public async Task<IEnumerable<Workshop>> GetAvailableWorkshopsAsync(CancellationToken cancellationToken = default)
     {
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
         return await context.Workshops
             .Include(w => w.Instructor)
             .Include(w => w.Enrollments)

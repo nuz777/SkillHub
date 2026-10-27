@@ -61,4 +61,33 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(e => new { e.ParticipantEmail, e.WorkshopId, e.Status });
         });
     }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+
+        configurationBuilder.Properties<DateTime>()
+            .HaveConversion<UtcDateTimeConverter>();
+
+        configurationBuilder.Properties<DateTime?>()
+            .HaveConversion<NullableUtcDateTimeConverter>();
+    }
+
+    private class UtcDateTimeConverter : Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>
+    {
+        public UtcDateTimeConverter() : base(
+            d => d.Kind == DateTimeKind.Utc ? d : (d.Kind == DateTimeKind.Local ? d.ToUniversalTime() : DateTime.SpecifyKind(d, DateTimeKind.Utc)),
+            d => DateTime.SpecifyKind(d, DateTimeKind.Utc))
+        {
+        }
+    }
+
+    private class NullableUtcDateTimeConverter : Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime?, DateTime?>
+    {
+        public NullableUtcDateTimeConverter() : base(
+            d => !d.HasValue ? d : (d.Value.Kind == DateTimeKind.Utc ? d : (d.Value.Kind == DateTimeKind.Local ? d.Value.ToUniversalTime() : DateTime.SpecifyKind(d.Value, DateTimeKind.Utc))),
+            d => !d.HasValue ? d : DateTime.SpecifyKind(d.Value, DateTimeKind.Utc))
+        {
+        }
+    }
 }

@@ -8,6 +8,7 @@ using SkillHub.Application;
 using SkillHub.Infrastructure;
 using SkillHub.Infrastructure.Persistence;
 using SkillHub.Infrastructure.Security;
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 

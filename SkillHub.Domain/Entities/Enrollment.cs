@@ -37,8 +37,8 @@ public class Enrollment : BaseEntity
         }
 
         Status = EnrollmentStatus.Cancelled;
-        CancelledAt = DateTime.Now;
+        CancelledAt = DateTime.UtcNow;
         CancelledBy = cancelledBy;
-        UpdatedAt = DateTime.Now;
+        UpdatedAt = DateTime.UtcNow;
     }
 }
