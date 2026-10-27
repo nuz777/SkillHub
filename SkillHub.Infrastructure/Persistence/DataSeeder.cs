@@ -31,11 +31,12 @@ public static class DataSeeder
         // 2. Instructores / Empleados iniciales
         var instructorsData = new List<(string Name, string Email, string Specialty, string Password)>
         {
-            ("Carlos Mendoza", "carlos.mendoza@skillhub.com", "Fotografía", "Instructor123!"),
-            ("Laura Gómez", "laura.gomez@skillhub.com", "Cocina", "Instructor123!"),
-            ("Andrés Torres", "andres.torres@skillhub.com", "Oratoria", "Instructor123!"),
-            ("Sofía Morales", "sofia.morales@skillhub.com", "Diseño Gráfico", "Instructor123!"),
-            ("Hernán Darío Quintero Gil", "hernan.quintero@correo.com", "Música", "Instructor123!"),
+            ("Andrés Felipe Mejía Arango", "andres.mejia@correo.com", "Fotografía", "Instructor2026*"),
+            ("Rosa Elena Barrios Polo", "rosa.barrios@correo.com", "Cocina", "Instructor2026*"),
+            ("Mauricio Jiménez Cárdenas", "mauricio.jimenez@correo.com", "Oratoria", "Instructor2026*"),
+            ("Natalia Herrera Castaño", "natalia.herrera@correo.com", "Diseño gráfico", "Instructor2026*"),
+            ("Hernán Darío Quintero Gil", "hernan.quintero@correo.com", "Música", "Instructor2026*"),
+            ("Paola Andrea Vargas Mora", "paola.vargas@correo.com", "Marketing digital", "Instructor2026*"),
             ("Admin SkillHub", "admin@skillhub.com", "Coordinación", "Admin123!")
         };
 
@@ -55,6 +56,16 @@ public static class DataSeeder
                 await userManager.CreateAsync(user, password);
                 await userManager.AddToRoleAsync(user, UserRoles.Employee);
             }
+            else
+            {
+                user.FullName = name;
+                user.Specialty = specialty;
+                await userManager.UpdateAsync(user);
+                if (!await userManager.IsInRoleAsync(user, UserRoles.Employee))
+                {
+                    await userManager.AddToRoleAsync(user, UserRoles.Employee);
+                }
+            }
 
             // Asegurar que exista entidad Instructor en BD
             var instructorEntity = await context.Instructors.FirstOrDefaultAsync(i => i.Email == email);
@@ -67,8 +78,21 @@ public static class DataSeeder
                     Specialty = specialty
                 });
             }
+            else
+            {
+                instructorEntity.FullName = name;
+                instructorEntity.Specialty = specialty;
+            }
         }
         await context.SaveChangesAsync();
+
+        // Eliminar instructores anteriores
+        string[] oldEmails = ["carlos.mendoza@skillhub.com", "laura.gomez@skillhub.com", "andres.torres@skillhub.com", "sofia.morales@skillhub.com"];
+        foreach (var oldEmail in oldEmails)
+        {
+            var oldUser = await userManager.FindByEmailAsync(oldEmail);
+            if (oldUser != null) await userManager.DeleteAsync(oldUser);
+        }
 
         // 3. Participantes iniciales
         var participantsData = new List<(string Name, string Email, string Password)>
@@ -134,98 +158,113 @@ public static class DataSeeder
         // 4. Talleres iniciales (los 6 primeros talleres requeridos)
         var allowedCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "FOT-001", "COC-001", "ORA-001", "DIS-001", "MAT-001", "MUS-001"
+            "FOT-001", "COC-001", "ORA-001", "DIS-001", "MUS-001", "MKT-001"
         };
 
-        if (!await context.Workshops.AnyAsync())
+        var andres = await context.Instructors.FirstAsync(i => i.Email == "andres.mejia@correo.com");
+        var rosa = await context.Instructors.FirstAsync(i => i.Email == "rosa.barrios@correo.com");
+        var mauricio = await context.Instructors.FirstAsync(i => i.Email == "mauricio.jimenez@correo.com");
+        var natalia = await context.Instructors.FirstAsync(i => i.Email == "natalia.herrera@correo.com");
+        var hernan = await context.Instructors.FirstAsync(i => i.Email == "hernan.quintero@correo.com");
+        var paola = await context.Instructors.FirstAsync(i => i.Email == "paola.vargas@correo.com");
+
+        var baseDate = DateTime.UtcNow.Date.AddDays(7);
+
+        var officialWorkshops = new List<Workshop>
         {
-            var carlos = await context.Instructors.FirstAsync(i => i.Email == "carlos.mendoza@skillhub.com");
-            var laura = await context.Instructors.FirstAsync(i => i.Email == "laura.gomez@skillhub.com");
-            var andres = await context.Instructors.FirstAsync(i => i.Email == "andres.torres@skillhub.com");
-            var sofia = await context.Instructors.FirstAsync(i => i.Email == "sofia.morales@skillhub.com");
-            var hernan = await context.Instructors.FirstAsync(i => i.Email == "hernan.quintero@correo.com");
-
-            var baseDate = DateTime.UtcNow.Date.AddDays(7);
-
-            var initialWorkshops = new List<Workshop>
+            new()
             {
-                new()
-                {
-                    Code = "FOT-001",
-                    Title = "Fotografía Urbana y Manejo de Luz Natural",
-                    Description = "Taller práctico sobre composición visual, captura callejera y aprovechamiento de luz ambiental.",
-                    InstructorId = carlos.Id,
-                    Instructor = carlos,
-                    InstructorEmail = carlos.Email,
-                    StartDate = DateTime.SpecifyKind(baseDate.AddHours(9), DateTimeKind.Utc),
-                    EndDate = DateTime.SpecifyKind(baseDate.AddHours(13), DateTimeKind.Utc),
-                    MaxCapacity = 15
-                },
-                new()
-                {
-                    Code = "COC-001",
-                    Title = "Cocina Mediterránea Básica",
-                    Description = "Aprende técnicas fundamentales de preparación, pastas frescas y salsas clásicas.",
-                    InstructorId = laura.Id,
-                    Instructor = laura,
-                    InstructorEmail = laura.Email,
-                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(1).AddHours(14), DateTimeKind.Utc),
-                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(1).AddHours(18), DateTimeKind.Utc),
-                    MaxCapacity = 12
-                },
-                new()
-                {
-                    Code = "ORA-001",
-                    Title = "Oratoria y Comunicación Asertiva",
-                    Description = "Técnicas de modulación de voz, lenguaje no verbal y persuasión para hablar en público con confianza.",
-                    InstructorId = andres.Id,
-                    Instructor = andres,
-                    InstructorEmail = andres.Email,
-                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(2).AddHours(10), DateTimeKind.Utc),
-                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(2).AddHours(14), DateTimeKind.Utc),
-                    MaxCapacity = 20
-                },
-                new()
-                {
-                    Code = "DIS-001",
-                    Title = "Fundamentos de Diseño Visual y Branding",
-                    Description = "Creación de identidades de marca, teoría del color, tipografía y diseño con propósito.",
-                    InstructorId = sofia.Id,
-                    Instructor = sofia,
-                    InstructorEmail = sofia.Email,
-                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(3).AddHours(15), DateTimeKind.Utc),
-                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(3).AddHours(19), DateTimeKind.Utc),
-                    MaxCapacity = 18
-                },
-                new()
-                {
-                    Code = "MAT-001",
-                    Title = "Matemáticas Básicas y Aplicadas",
-                    Description = "Aprende matemáticas y resolución de problemas prácticos.",
-                    InstructorId = andres.Id,
-                    Instructor = andres,
-                    InstructorEmail = andres.Email,
-                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(22).AddHours(10), DateTimeKind.Utc),
-                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(22).AddHours(13), DateTimeKind.Utc),
-                    MaxCapacity = 15
-                },
-                new()
-                {
-                    Code = "MUS-001",
-                    Title = "Guitarra desde cero",
-                    Description = "Acordes básicos y primeras canciones.",
-                    InstructorId = hernan.Id,
-                    Instructor = hernan,
-                    InstructorEmail = hernan.Email,
-                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(39).AddHours(19), DateTimeKind.Utc),
-                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(39).AddHours(22), DateTimeKind.Utc),
-                    MaxCapacity = 10
-                }
-            };
+                Code = "FOT-001",
+                Title = "Fotografía Urbana y Manejo de Luz Natural",
+                Description = "Taller práctico sobre composición visual, captura callejera y aprovechamiento de luz ambiental.",
+                InstructorId = andres.Id,
+                Instructor = andres,
+                InstructorEmail = andres.Email,
+                StartDate = DateTime.SpecifyKind(baseDate.AddHours(9), DateTimeKind.Utc),
+                EndDate = DateTime.SpecifyKind(baseDate.AddHours(13), DateTimeKind.Utc),
+                MaxCapacity = 15
+            },
+            new()
+            {
+                Code = "COC-001",
+                Title = "Cocina Mediterránea Básica",
+                Description = "Aprende técnicas fundamentales de preparación, pastas frescas y salsas clásicas.",
+                InstructorId = rosa.Id,
+                Instructor = rosa,
+                InstructorEmail = rosa.Email,
+                StartDate = DateTime.SpecifyKind(baseDate.AddDays(1).AddHours(14), DateTimeKind.Utc),
+                EndDate = DateTime.SpecifyKind(baseDate.AddDays(1).AddHours(18), DateTimeKind.Utc),
+                MaxCapacity = 12
+            },
+            new()
+            {
+                Code = "ORA-001",
+                Title = "Oratoria y Comunicación Asertiva",
+                Description = "Técnicas de modulación de voz, lenguaje no verbal y persuasión para hablar en público con confianza.",
+                InstructorId = mauricio.Id,
+                Instructor = mauricio,
+                InstructorEmail = mauricio.Email,
+                StartDate = DateTime.SpecifyKind(baseDate.AddDays(2).AddHours(10), DateTimeKind.Utc),
+                EndDate = DateTime.SpecifyKind(baseDate.AddDays(2).AddHours(14), DateTimeKind.Utc),
+                MaxCapacity = 20
+            },
+            new()
+            {
+                Code = "DIS-001",
+                Title = "Fundamentos de Diseño Visual y Branding",
+                Description = "Creación de identidades de marca, teoría del color, tipografía y diseño con propósito.",
+                InstructorId = natalia.Id,
+                Instructor = natalia,
+                InstructorEmail = natalia.Email,
+                StartDate = DateTime.SpecifyKind(baseDate.AddDays(3).AddHours(15), DateTimeKind.Utc),
+                EndDate = DateTime.SpecifyKind(baseDate.AddDays(3).AddHours(19), DateTimeKind.Utc),
+                MaxCapacity = 18
+            },
+            new()
+            {
+                Code = "MUS-001",
+                Title = "Guitarra desde cero",
+                Description = "Acordes básicos y primeras canciones.",
+                InstructorId = hernan.Id,
+                Instructor = hernan,
+                InstructorEmail = hernan.Email,
+                StartDate = DateTime.SpecifyKind(baseDate.AddDays(4).AddHours(19), DateTimeKind.Utc),
+                EndDate = DateTime.SpecifyKind(baseDate.AddDays(4).AddHours(22), DateTimeKind.Utc),
+                MaxCapacity = 10
+            },
+            new()
+            {
+                Code = "MKT-001",
+                Title = "Marketing Digital y Estrategia en Redes",
+                Description = "Fundamentos de marketing de contenidos, pauta digital, analítica web y crecimiento de marcas en redes sociales.",
+                InstructorId = paola.Id,
+                Instructor = paola,
+                InstructorEmail = paola.Email,
+                StartDate = DateTime.SpecifyKind(baseDate.AddDays(5).AddHours(10), DateTimeKind.Utc),
+                EndDate = DateTime.SpecifyKind(baseDate.AddDays(5).AddHours(14), DateTimeKind.Utc),
+                MaxCapacity = 20
+            }
+        };
 
-            context.Workshops.AddRange(initialWorkshops);
-            await context.SaveChangesAsync();
+        foreach (var ow in officialWorkshops)
+        {
+            var existing = await context.Workshops.FirstOrDefaultAsync(w => w.Code == ow.Code);
+            if (existing == null)
+            {
+                context.Workshops.Add(ow);
+            }
+            else
+            {
+                existing.Title = ow.Title;
+                existing.Description = ow.Description;
+                existing.InstructorId = ow.InstructorId;
+                existing.InstructorEmail = ow.InstructorEmail;
+                existing.StartDate = ow.StartDate;
+                existing.EndDate = ow.EndDate;
+                existing.MaxCapacity = ow.MaxCapacity;
+            }
         }
+        await context.SaveChangesAsync();
 
         // Si existen talleres adicionales fuera de los 6 permitidos, eliminarlos
         var extraWorkshops = await context.Workshops
