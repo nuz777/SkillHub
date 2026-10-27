@@ -62,21 +62,30 @@
                     <a asp-action="Index" class="btn btn-outline-secondary">
                         Ver otros talleres
                     </a>
-                    @if (Model.AvailableSpots > 0)
+                    @if (User.IsInRole(UserRoles.Employee))
                     {
-                        <form asp-controller="Enrollments" asp-action="Enroll" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="workshopId" value="@Model.Id" />
-                            <button type="submit" class="btn btn-primary px-4 fw-semibold">
-                                <i class="bi bi-pencil-square me-1"></i> Confirmar Inscripción
-                            </button>
-                        </form>
+                        <a asp-action="Enrolled" asp-route-id="@Model.Id" class="btn btn-dark px-4 fw-semibold">
+                            <i class="bi bi-people me-1"></i> Ver Inscritos (@Model.ActiveEnrollmentsCount)
+                        </a>
                     }
                     else
                     {
-                        <button class="btn btn-danger px-4" disabled>
-                            Cupos agotados
-                        </button>
+                        @if (Model.AvailableSpots > 0)
+                        {
+                            <form asp-controller="Enrollments" asp-action="Enroll" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="workshopId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                                    <i class="bi bi-pencil-square me-1"></i> Confirmar Inscripción
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-danger px-4" disabled>
+                                Cupos agotados
+                            </button>
+                        }
                     }
                 </div>
             </div>

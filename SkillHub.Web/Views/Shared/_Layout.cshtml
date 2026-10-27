@@ -44,25 +44,51 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link text-white" asp-controller="Workshops" asp-action="Index">
-                            <i class="bi bi-calendar-event me-1"></i> Talleres Disponibles
+                            <i class="bi bi-calendar-event me-1"></i> Catálogo de Talleres
                         </a>
                     </li>
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Enrollments" asp-action="Index">
-                                <i class="bi bi-card-checklist me-1"></i> Mis Inscripciones
-                            </a>
-                        </li>
+                        @if (User.IsInRole(UserRoles.Employee))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-warning fw-semibold" asp-controller="Workshops" asp-action="Create">
+                                    <i class="bi bi-plus-circle-fill me-1"></i> Publicar Taller
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white-50" href="http://localhost:5180/scalar" target="_blank">
+                                    <i class="bi bi-terminal me-1"></i> Panel API / Scalar
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Enrollments" asp-action="Index">
+                                    <i class="bi bi-card-checklist me-1"></i> Mis Inscripciones
+                                </a>
+                            </li>
+                        }
                     }
                 </ul>
                 <div class="d-flex align-items-center gap-2">
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <span class="text-white-50 small me-2">
-                            <i class="bi bi-person-circle"></i> @User.Identity.Name
-                        </span>
-                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        @if (User.IsInRole(UserRoles.Employee))
+                        {
+                            <span class="badge bg-warning text-dark py-2 px-3 fw-semibold">
+                                <i class="bi bi-person-badge-fill me-1"></i> Instructor: @User.Identity.Name
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-light text-dark py-2 px-3 fw-semibold">
+                                <i class="bi bi-person-fill me-1"></i> Participante: @User.Identity.Name
+                            </span>
+                        }
+
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline ms-2">
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-outline-light btn-sm">
                                 <i class="bi bi-box-arrow-right"></i> Salir

@@ -24,6 +24,11 @@ public class EnrollmentService(
             throw new BusinessRuleException($"El participante con correo '{participantEmail}' no existe en la plataforma.", 404);
         }
 
+        if (user.Value.Role != UserRoles.Participant)
+        {
+            throw new BusinessRuleException("Solo los usuarios con rol de participante pueden inscribirse en talleres. Los instructores y empleados no pueden inscribirse como alumnos.", 403);
+        }
+
         var workshop = await workshopRepository.GetByIdAsync(workshopId, cancellationToken);
         if (workshop is null)
         {
