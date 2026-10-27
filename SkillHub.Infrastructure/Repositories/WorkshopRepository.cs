@@ -66,4 +66,10 @@ public class WorkshopRepository(ApplicationDbContext context) : IWorkshopReposit
         context.Workshops.Update(workshop);
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task DeleteAsync(Workshop workshop, CancellationToken cancellationToken = default)
+    {
+        context.Workshops.Remove(workshop);
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

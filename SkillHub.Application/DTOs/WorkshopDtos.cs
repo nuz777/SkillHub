@@ -29,9 +29,26 @@ public record CreateWorkshopDto(
     [MaxLength(1000)]
     string Description,
 
-    [Required(ErrorMessage = "El correo del instructor es obligatorio.")]
     [EmailAddress(ErrorMessage = "El correo del instructor debe ser válido.")]
-    string InstructorEmail,
+    string? InstructorEmail = null,
+
+    [Required(ErrorMessage = "La fecha y hora de inicio es requerida.")]
+    DateTime StartDate = default,
+
+    [Required(ErrorMessage = "La fecha y hora de fin es requerida.")]
+    DateTime EndDate = default,
+
+    [Range(1, 500, ErrorMessage = "El cupo debe ser de al menos 1.")]
+    int MaxCapacity = 15
+);
+
+public record UpdateWorkshopDto(
+    [Required(ErrorMessage = "El título es obligatorio.")]
+    [MaxLength(150)]
+    string Title,
+
+    [MaxLength(1000)]
+    string Description,
 
     [Required(ErrorMessage = "La fecha y hora de inicio es requerida.")]
     DateTime StartDate,
@@ -39,7 +56,7 @@ public record CreateWorkshopDto(
     [Required(ErrorMessage = "La fecha y hora de fin es requerida.")]
     DateTime EndDate,
 
-    [Range(1, 500, ErrorMessage = "El cupo debe ser de al menos 1.")]
+    [Range(1, 500, ErrorMessage = "El cupo debe estar entre 1 y 500.")]
     int MaxCapacity
 );
 

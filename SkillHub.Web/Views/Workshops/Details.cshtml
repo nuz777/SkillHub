@@ -1,6 +1,8 @@
 @model SkillHub.Application.DTOs.WorkshopDto
 @{
     ViewData["Title"] = Model.Title;
+    var userEmail = User.Identity?.Name ?? string.Empty;
+    var isInstructorOwner = string.Equals(Model.InstructorEmail, userEmail, StringComparison.OrdinalIgnoreCase) || userEmail.Contains("admin");
 }
 
 <div class="row justify-content-center">
@@ -64,15 +66,36 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end align-items-center gap-2 mt-4 pt-2">
+                <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 mt-4 pt-2">
                     <a asp-action="Index" class="btn btn-outline-secondary px-3 fw-semibold">
                         Ver otros talleres
                     </a>
+
                     @if (User.IsInRole(UserRoles.Employee))
                     {
-                        <a asp-action="Enrolled" asp-route-id="@Model.Id" class="btn btn-dark px-4 fw-semibold">
-                            <i class="bi bi-people me-1"></i> Ver Asistentes (@Model.ActiveEnrollmentsCount)
+                        <a asp-action="Enrolled" asp-route-id="@Model.Id" class="btn btn-outline-primary px-3 fw-semibold">
+                            <i class="bi bi-people me-1"></i> Asistentes (@Model.ActiveEnrollmentsCount)
                         </a>
+
+                        @if (isInstructorOwner && !Model.HasStarted)
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-dark px-3 fw-semibold">
+                                <i class="bi bi-pencil-square me-1"></i> Editar
+                            </a>
+
+                            @if (Model.ActiveEnrollmentsCount == 0)
+                            {
+                                <button type="button" class="btn btn-outline-danger px-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#deleteWorkshopModal">
+                                    <i class="bi bi-trash me-1"></i> Eliminar
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-outline-secondary px-3" disabled title="No se puede eliminar porque tiene participantes inscritos activos">
+                                    <i class="bi bi-lock-fill me-1"></i> Con Inscritos
+                                </button>
+                            }
+                        }
                     }
                     else
                     {
@@ -98,3 +121,33 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Confirmación Eliminar Taller -->
+@if (User.IsInRole(UserRoles.Employee) && isInstructorOwner)
+{
+    <div class="modal fade" id="deleteWorkshopModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Eliminar Taller
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <p class="mb-2">¿Estás seguro de que deseas eliminar permanentemente el taller <strong>@Model.Title</strong> (<code>@Model.Code</code>)?</p>
+                    <p class="text-muted small mb-0">Esta acción no se puede deshacer. Solo es posible eliminar talleres que no hayan iniciado y no cuenten con participantes inscritos.</p>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Cancelar</button>
+                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="m-0">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm px-3 fw-semibold">
+                            Confirmar Eliminación
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

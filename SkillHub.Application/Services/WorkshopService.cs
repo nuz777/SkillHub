@@ -24,6 +24,11 @@ public class WorkshopService(
 
     public async Task<WorkshopDto> CreateWorkshopAsync(CreateWorkshopDto dto, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(dto.InstructorEmail))
+        {
+            throw new BusinessRuleException("El correo del instructor es obligatorio.", 400);
+        }
+
         var normalizedEmail = dto.InstructorEmail.Trim().ToLowerInvariant();
         var instructor = await instructorRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
 
@@ -49,9 +54,10 @@ public class WorkshopService(
             InstructorId = instructor.Id,
             InstructorEmail = instructor.Email,
             Instructor = instructor,
-            StartDate = dto.StartDate.ToUniversalTime(),
-            EndDate = dto.EndDate.ToUniversalTime(),
-            MaxCapacity = dto.MaxCapacity
+            StartDate = dto.StartDate,
+            EndDate = dto.EndDate,
+            MaxCapacity = dto.MaxCapacity,
+            CreatedAt = DateTime.Now
         };
 
         // Reglas de negocio del dominio
@@ -59,6 +65,97 @@ public class WorkshopService(
 
         var created = await workshopRepository.AddAsync(workshop, cancellationToken);
         return MapToDto(created);
+    }
+
+    public async Task<WorkshopDto> UpdateWorkshopAsync(
+        Guid id, 
+        UpdateWorkshopDto dto, 
+        string requestedByEmail, 
+        bool isEmployee, 
+        CancellationToken cancellationToken = default)
+    {
+        var workshop = await workshopRepository.GetByIdAsync(id, cancellationToken);
+        if (workshop is null)
+        {
+            throw new BusinessRuleException("El taller especificado no existe.", 404);
+        }
+
+        var normalizedEmail = requestedByEmail.Trim().ToLowerInvariant();
+        var isOwner = string.Equals(workshop.InstructorEmail, normalizedEmail, StringComparison.OrdinalIgnoreCase);
+        var isAdmin = normalizedEmail.Contains("admin");
+
+        if (!isOwner && !isAdmin)
+        {
+            throw new BusinessRuleException("Solo el instructor a cargo o un administrador pueden modificar este taller.", 403);
+        }
+
+        if (workshop.HasStarted)
+        {
+            throw new BusinessRuleException("No es posible modificar las fechas u horarios de un taller que ya ha iniciado.", 400);
+        }
+
+        if (dto.MaxCapacity < workshop.ActiveEnrollmentsCount)
+        {
+            throw new BusinessRuleException(
+                $"El cupo máximo ({dto.MaxCapacity}) no puede ser menor al número de participantes ya inscritos ({workshop.ActiveEnrollmentsCount}).", 
+                400);
+        }
+
+        if (dto.StartDate <= DateTime.Now)
+        {
+            throw new BusinessRuleException("La nueva fecha de inicio debe ser futura.", 400);
+        }
+
+        if (dto.EndDate <= dto.StartDate)
+        {
+            throw new BusinessRuleException("La fecha de finalización debe ser posterior a la de inicio.", 400);
+        }
+
+        workshop.Title = dto.Title.Trim();
+        workshop.Description = dto.Description?.Trim() ?? string.Empty;
+        workshop.StartDate = dto.StartDate;
+        workshop.EndDate = dto.EndDate;
+        workshop.MaxCapacity = dto.MaxCapacity;
+        workshop.UpdatedAt = DateTime.Now;
+
+        await workshopRepository.UpdateAsync(workshop, cancellationToken);
+        return MapToDto(workshop);
+    }
+
+    public async Task DeleteWorkshopAsync(
+        Guid id, 
+        string requestedByEmail, 
+        bool isEmployee, 
+        CancellationToken cancellationToken = default)
+    {
+        var workshop = await workshopRepository.GetByIdAsync(id, cancellationToken);
+        if (workshop is null)
+        {
+            throw new BusinessRuleException("El taller especificado no existe.", 404);
+        }
+
+        var normalizedEmail = requestedByEmail.Trim().ToLowerInvariant();
+        var isOwner = string.Equals(workshop.InstructorEmail, normalizedEmail, StringComparison.OrdinalIgnoreCase);
+        var isAdmin = normalizedEmail.Contains("admin");
+
+        if (!isOwner && !isAdmin)
+        {
+            throw new BusinessRuleException("Solo el instructor a cargo o un administrador pueden eliminar este taller.", 403);
+        }
+
+        if (workshop.HasStarted)
+        {
+            throw new BusinessRuleException("No es posible eliminar un taller que ya ha comenzado.", 400);
+        }
+
+        if (workshop.ActiveEnrollmentsCount > 0)
+        {
+            throw new BusinessRuleException(
+                $"No es posible eliminar el taller porque actualmente tiene {workshop.ActiveEnrollmentsCount} participantes inscritos activos.", 
+                400);
+        }
+
+        await workshopRepository.DeleteAsync(workshop, cancellationToken);
     }
 
     public async Task<IEnumerable<TopWorkshopReportDto>> GetTopWorkshopsReportAsync(CancellationToken cancellationToken = default)

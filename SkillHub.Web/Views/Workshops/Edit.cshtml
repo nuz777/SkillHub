@@ -1,0 +1,92 @@
+@model SkillHub.Application.DTOs.UpdateWorkshopDto
+@{
+    var workshop = ViewBag.Workshop as SkillHub.Application.DTOs.WorkshopDto;
+    ViewData["Title"] = $"Editar Taller - {workshop?.Title}";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <a asp-action="Details" asp-route-id="@workshop?.Id" class="btn btn-link text-decoration-none px-0 mb-3 text-secondary fw-semibold">
+            <i class="bi bi-arrow-left me-1"></i> Volver a Detalles
+        </a>
+
+        <div class="card sh-card fade-in-up border-0 shadow-sm">
+            <div class="card-body p-4 p-md-5">
+                <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                    <div class="p-3 rounded-4 d-flex align-items-center justify-content-center text-primary" style="width: 56px; height: 56px; background-color: rgba(30, 64, 175, 0.08);">
+                        <i class="bi bi-pencil-square fs-3"></i>
+                    </div>
+                    <div>
+                        <span class="badge bg-warning-subtle text-warning-emphasis fw-bold text-uppercase small px-2 py-1 mb-1">Modificar Taller</span>
+                        <h3 class="fw-bold text-dark mb-0">Editar Taller: @workshop?.Code</h3>
+                        <p class="text-muted small mb-0">Actualiza los datos del programa, horarios y disponibilidad de cupos.</p>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-3 bg-light border mb-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-semibold d-block">Código del Taller</span>
+                        <span class="badge bg-secondary fs-6 font-monospace">@workshop?.Code</span>
+                    </div>
+                    <div>
+                        <span class="text-muted small text-uppercase fw-semibold d-block">Inscritos Activos</span>
+                        <span class="badge bg-primary fs-6">@workshop?.ActiveEnrollmentsCount participantes</span>
+                    </div>
+                    <div>
+                        <span class="text-muted small text-uppercase fw-semibold d-block">Instructor a Cargo</span>
+                        <span class="fw-semibold text-dark small">@workshop?.InstructorName</span>
+                    </div>
+                </div>
+
+                <form asp-action="Edit" asp-route-id="@workshop?.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small rounded-3" role="alert"></div>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Title" class="form-label fw-semibold text-secondary small text-uppercase">Título del Taller</label>
+                            <input asp-for="Title" class="form-control" required />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label fw-semibold text-secondary small text-uppercase">Descripción del Programa</label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="MaxCapacity" class="form-label fw-semibold text-secondary small text-uppercase">Cupo Máximo</label>
+                            <input asp-for="MaxCapacity" type="number" class="form-control" min="@(workshop?.ActiveEnrollmentsCount ?? 1)" max="500" required />
+                            <div class="form-text small">
+                                Mínimo permitido: <strong>@(workshop?.ActiveEnrollmentsCount ?? 1)</strong> (no puede ser inferior a los inscritos actuales).
+                            </div>
+                            <span asp-validation-for="MaxCapacity" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="StartDate" class="form-label fw-semibold text-secondary small text-uppercase">Fecha y Hora de Inicio</label>
+                            <input asp-for="StartDate" type="datetime-local" class="form-control" value="@ViewBag.FormattedStart" required />
+                            <div class="form-text small">Debe ser una fecha futura.</div>
+                            <span asp-validation-for="StartDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="EndDate" class="form-label fw-semibold text-secondary small text-uppercase">Fecha y Hora de Finalización</label>
+                            <input asp-for="EndDate" type="datetime-local" class="form-control" value="@ViewBag.FormattedEnd" required />
+                            <div class="form-text small">Debe ser posterior a la fecha de inicio.</div>
+                            <span asp-validation-for="EndDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-center gap-2 mt-4 pt-3 border-top">
+                        <a asp-action="Details" asp-route-id="@workshop?.Id" class="btn btn-outline-secondary px-3">Cancelar</a>
+                        <button type="submit" class="btn btn-sh-primary px-4 fw-semibold">
+                            <i class="bi bi-save me-1"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

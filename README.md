@@ -122,7 +122,9 @@ dotnet run --project SkillHub.Web/SkillHub.Web.csproj
 | `POST` | `/api/v1/auth/login` | Public | Authenticates and returns a JWT token |
 | `GET` | `/api/v1/workshops` | Public | Lists all future workshops with calculated available spots |
 | `GET` | `/api/v1/workshops/{id}` | Public | Retrieves details of a specific workshop |
-| `POST` | `/api/v1/workshops` | Employee | Publishes a new workshop |
+| `POST` | `/api/v1/workshops` | Employee | Publishes a new workshop (instructor email auto-assigned if omitted) |
+| `PUT`  | `/api/v1/workshops/{id}` | Instructor / Admin | Updates a workshop (validating ownership, future dates, and minimum capacity) |
+| `DELETE`| `/api/v1/workshops/{id}`| Instructor / Admin | Deletes an unstarted workshop without active enrollments |
 | `GET` | `/api/v1/workshops/{id}/enrollments` | Employee | Lists enrolled participants for a given workshop |
 | `POST` | `/api/v1/enrollments` | Participant | Enrolls the authenticated participant in a workshop |
 | `GET` | `/api/v1/enrollments/mine` | Participant | Lists enrollments of the authenticated participant |

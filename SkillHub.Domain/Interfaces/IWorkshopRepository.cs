@@ -11,4 +11,5 @@ public interface IWorkshopRepository
     Task<IEnumerable<Workshop>> GetTopWorkshopsAsync(int count = 10, CancellationToken cancellationToken = default);
     Task<Workshop> AddAsync(Workshop workshop, CancellationToken cancellationToken = default);
     Task UpdateAsync(Workshop workshop, CancellationToken cancellationToken = default);
+    Task DeleteAsync(Workshop workshop, CancellationToken cancellationToken = default);
 }

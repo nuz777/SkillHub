@@ -239,9 +239,19 @@ else
 
                         @if (isEmployee)
                         {
+                            var currentEmail = User.Identity?.Name ?? string.Empty;
+                            var isOwner = string.Equals(workshop.InstructorEmail, currentEmail, StringComparison.OrdinalIgnoreCase) || currentEmail.Contains("admin");
+
                             <a asp-action="Enrolled" asp-route-id="@workshop.Id" class="btn btn-outline-dark btn-sm flex-fill fw-semibold" style="border-radius: 8px;">
                                 <i class="bi bi-people me-1"></i>Inscritos (@workshop.ActiveEnrollmentsCount)
                             </a>
+
+                            @if (isOwner && !workshop.HasStarted)
+                            {
+                                <a asp-action="Edit" asp-route-id="@workshop.Id" class="btn btn-outline-primary btn-sm fw-semibold" style="border-radius: 8px;" title="Editar Taller">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                            }
                         }
                         else
                         {

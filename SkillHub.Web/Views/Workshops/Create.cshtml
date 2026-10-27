@@ -18,7 +18,7 @@
                     <div>
                         <span class="badge bg-primary-subtle text-primary fw-bold text-uppercase small px-2 py-1 mb-1">Módulo Docente</span>
                         <h3 class="fw-bold text-dark mb-0">Publicar Nuevo Taller</h3>
-                        <p class="text-muted small mb-0">Solo instructores y empleados autorizados pueden publicar talleres presenciales.</p>
+                        <p class="text-muted small mb-0">Completa la información técnica y de cupos del taller presencial.</p>
                     </div>
                 </div>
 
@@ -45,11 +45,19 @@
                             <span asp-validation-for="Description" class="text-danger small"></span>
                         </div>
 
+                        <!-- Instructor Asignado Automáticamente -->
                         <div class="col-md-6">
-                            <label asp-for="InstructorEmail" class="form-label fw-semibold text-secondary small text-uppercase">Correo del Instructor</label>
-                            <input asp-for="InstructorEmail" type="email" class="form-control" value="@(Model?.InstructorEmail ?? ViewBag.DefaultEmail)" placeholder="instructor@skillhub.com" required />
-                            <div class="form-text small">Debe corresponder a un instructor registrado.</div>
-                            <span asp-validation-for="InstructorEmail" class="text-danger small"></span>
+                            <label class="form-label fw-semibold text-secondary small text-uppercase">Instructor a Cargo</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-primary border-end-0">
+                                    <i class="bi bi-person-badge-fill"></i>
+                                </span>
+                                <input type="text" class="form-control bg-light border-start-0 text-dark fw-semibold" value="@ViewBag.DefaultEmail" readonly />
+                            </div>
+                            <input type="hidden" asp-for="InstructorEmail" value="@ViewBag.DefaultEmail" />
+                            <div class="form-text small text-success">
+                                <i class="bi bi-check-circle-fill me-1"></i> Asignado automáticamente a tu cuenta actual.
+                            </div>
                         </div>
 
                         <div class="col-md-6">
