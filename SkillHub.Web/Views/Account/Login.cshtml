@@ -58,13 +58,44 @@
             <!-- Acceso Rápido Demo -->
             <div class="border-top pt-3 mt-4 text-center">
                 <span class="text-muted small fw-semibold d-block mb-2">Acceso rápido de prueba:</span>
-                <div class="d-flex gap-2 justify-content-center">
-                    <button type="button" class="btn btn-sm btn-outline-primary" style="border-radius: 8px; font-size: 0.78rem;" onclick="fillCredentials('juan.perez@example.com', 'Participant123!')">
-                        <i class="bi bi-person me-1"></i>Participante Demo
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-warning text-dark" style="border-radius: 8px; font-size: 0.78rem;" onclick="fillCredentials('carlos.mendoza@skillhub.com', 'Instructor123!')">
-                        <i class="bi bi-shield-check me-1"></i>Instructor Demo
-                    </button>
+                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                    <!-- Participante Demo -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" style="border-radius: 8px 0 0 8px; font-size: 0.78rem;" onclick="fillCredentials('juan.perez@example.com', 'Participant123!')">
+                            <i class="bi bi-person me-1"></i>Participante Demo
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" style="border-radius: 0 8px 8px 0;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Elegir participante</span>
+                        </button>
+                        <ul class="dropdown-menu shadow-sm small">
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('juan.perez@example.com', 'Participant123!')"><strong>Juan Pérez</strong></a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('maria.rodriguez@example.com', 'Participant123!')"><strong>María Rodríguez</strong></a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('carlos.lopez@example.com', 'Participant123!')"><strong>Carlos López</strong></a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('ana.martinez@example.com', 'Participant123!')"><strong>Ana Martínez</strong></a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('andres.salazar@correo.com', 'Participant123!')"><strong>Andrés Salazar</strong></a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('camila.cardenas@correo.com', 'Participant123!')"><strong>Camila Cárdenas</strong></a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Instructor Demo -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" style="border-radius: 8px 0 0 8px; font-size: 0.78rem;" onclick="fillCredentials('andres.mejia@correo.com', 'Instructor2026*')">
+                            <i class="bi bi-shield-check me-1"></i>Instructor Demo
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-warning text-dark dropdown-toggle dropdown-toggle-split" style="border-radius: 0 8px 8px 0;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Elegir instructor</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm small">
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('andres.mejia@correo.com', 'Instructor2026*')"><strong>Andrés Felipe Mejía</strong> (Fotografía)</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('rosa.barrios@correo.com', 'Instructor2026*')"><strong>Rosa Elena Barrios</strong> (Cocina)</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('mauricio.jimenez@correo.com', 'Instructor2026*')"><strong>Mauricio Jiménez</strong> (Oratoria)</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('natalia.herrera@correo.com', 'Instructor2026*')"><strong>Natalia Herrera</strong> (Diseño gráfico)</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('hernan.quintero@correo.com', 'Instructor2026*')"><strong>Hernán Darío Quintero</strong> (Música)</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('paola.vargas@correo.com', 'Instructor2026*')"><strong>Paola Andrea Vargas</strong> (Marketing digital)</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="fillCredentials('admin@skillhub.com', 'Admin123!')"><strong>Admin SkillHub</strong> (Coordinación)</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

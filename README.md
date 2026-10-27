@@ -50,10 +50,12 @@ The database seeds initial employee (instructor) and participant accounts automa
 | Role | Full Name | Email | Password | Specialty |
 |---|---|---|---|---|
 | **Employee (Admin)** | Admin SkillHub | `admin@skillhub.com` | `Admin123!` | Coordinación |
-| **Employee (Instructor)** | Carlos Mendoza | `carlos.mendoza@skillhub.com` | `Instructor123!` | Fotografía |
-| **Employee (Instructor)** | Laura Gómez | `laura.gomez@skillhub.com` | `Instructor123!` | Cocina |
-| **Employee (Instructor)** | Andrés Torres | `andres.torres@skillhub.com` | `Instructor123!` | Oratoria |
-| **Employee (Instructor)** | Sofía Morales | `sofia.morales@skillhub.com` | `Instructor123!` | Diseño Gráfico |
+| **Employee (Instructor)** | Andrés Felipe Mejía Arango | `andres.mejia@correo.com` | `Instructor2026*` | Fotografía |
+| **Employee (Instructor)** | Rosa Elena Barrios Polo | `rosa.barrios@correo.com` | `Instructor2026*` | Cocina |
+| **Employee (Instructor)** | Mauricio Jiménez Cárdenas | `mauricio.jimenez@correo.com` | `Instructor2026*` | Oratoria |
+| **Employee (Instructor)** | Natalia Herrera Castaño | `natalia.herrera@correo.com` | `Instructor2026*` | Diseño gráfico |
+| **Employee (Instructor)** | Hernán Darío Quintero Gil | `hernan.quintero@correo.com` | `Instructor2026*` | Música |
+| **Employee (Instructor)** | Paola Andrea Vargas Mora | `paola.vargas@correo.com` | `Instructor2026*` | Marketing digital |
 
 ### Participant Accounts (Access to Participant Web Portal & Public Endpoints)
 | Role | Full Name | Email | Password |
