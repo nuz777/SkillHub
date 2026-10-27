@@ -179,7 +179,6 @@ public static class DataSeeder
 
         try
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using var package = new ExcelPackage(new FileInfo(excelPath));
 
             // Hoja Instructors
