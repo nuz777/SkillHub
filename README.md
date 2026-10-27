@@ -99,7 +99,7 @@ docker run -d \
   postgres:16-alpine
 ```
 
-Verify the connection string in `SkillHub.Api/appsettings.json` and `SkillHub.Web/appsettings.json`:
+Verify the connection string in `src/SkillHub.Api/appsettings.json` and `src/SkillHub.Web/appsettings.json`:
 ```json
 "ConnectionStrings": {
   "DefaultConnection": "Host=localhost;Port=5432;Database=SkillHubDb;Username=postgres;Password=postgres"
@@ -121,10 +121,10 @@ Verify the connection string in `SkillHub.Api/appsettings.json` and `SkillHub.We
 ### 4. Running via Terminal (CLI)
 ```bash
 # Run the API
-dotnet run --project SkillHub.Api/SkillHub.Api.csproj
+dotnet run --project src/SkillHub.Api/SkillHub.Api.csproj
 
 # In another terminal, run the Web application
-dotnet run --project SkillHub.Web/SkillHub.Web.csproj
+dotnet run --project src/SkillHub.Web/SkillHub.Web.csproj
 ```
 
 ---

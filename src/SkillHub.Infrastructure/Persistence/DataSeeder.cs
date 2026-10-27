@@ -297,7 +297,11 @@ public static class DataSeeder
             Path.Combine(AppContext.BaseDirectory, "SkillHub_Data.xlsx"),
             Path.Combine(Directory.GetCurrentDirectory(), "SkillHub_Data.xlsx"),
             Path.Combine(Directory.GetCurrentDirectory(), "..", "SkillHub_Data.xlsx"),
-            "/home/cohorte5/Descargas/SkillHub_Data.xlsx"
+            Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "SkillHub_Data.xlsx"),
+            Path.Combine(Directory.GetCurrentDirectory(), "sample_enrollments.xlsx"),
+            Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "sample_enrollments.xlsx"),
+            "/home/cohorte5/Descargas/SkillHub_Data.xlsx",
+            "/home/cohorte5/Descargas/sample_enrollments.xlsx"
         ];
 
         var excelPath = candidatePaths.FirstOrDefault(File.Exists);
