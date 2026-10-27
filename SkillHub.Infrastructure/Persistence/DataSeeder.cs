@@ -35,6 +35,7 @@ public static class DataSeeder
             ("Laura Gómez", "laura.gomez@skillhub.com", "Cocina", "Instructor123!"),
             ("Andrés Torres", "andres.torres@skillhub.com", "Oratoria", "Instructor123!"),
             ("Sofía Morales", "sofia.morales@skillhub.com", "Diseño Gráfico", "Instructor123!"),
+            ("Hernán Darío Quintero Gil", "hernan.quintero@correo.com", "Música", "Instructor123!"),
             ("Admin SkillHub", "admin@skillhub.com", "Coordinación", "Admin123!")
         };
 
@@ -95,13 +96,19 @@ public static class DataSeeder
             }
         }
 
-        // 4. Talleres iniciales (con fechas futuras para catálogo)
+        // 4. Talleres iniciales (los 6 primeros talleres requeridos)
+        var allowedCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "FOT-001", "COC-001", "ORA-001", "DIS-001", "MAT-001", "MUS-001"
+        };
+
         if (!await context.Workshops.AnyAsync())
         {
             var carlos = await context.Instructors.FirstAsync(i => i.Email == "carlos.mendoza@skillhub.com");
             var laura = await context.Instructors.FirstAsync(i => i.Email == "laura.gomez@skillhub.com");
             var andres = await context.Instructors.FirstAsync(i => i.Email == "andres.torres@skillhub.com");
             var sofia = await context.Instructors.FirstAsync(i => i.Email == "sofia.morales@skillhub.com");
+            var hernan = await context.Instructors.FirstAsync(i => i.Email == "hernan.quintero@correo.com");
 
             var baseDate = DateTime.UtcNow.Date.AddDays(7);
 
@@ -154,6 +161,30 @@ public static class DataSeeder
                     StartDate = DateTime.SpecifyKind(baseDate.AddDays(3).AddHours(15), DateTimeKind.Utc),
                     EndDate = DateTime.SpecifyKind(baseDate.AddDays(3).AddHours(19), DateTimeKind.Utc),
                     MaxCapacity = 18
+                },
+                new()
+                {
+                    Code = "MAT-001",
+                    Title = "Matemáticas Básicas y Aplicadas",
+                    Description = "Aprende matemáticas y resolución de problemas prácticos.",
+                    InstructorId = andres.Id,
+                    Instructor = andres,
+                    InstructorEmail = andres.Email,
+                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(22).AddHours(10), DateTimeKind.Utc),
+                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(22).AddHours(13), DateTimeKind.Utc),
+                    MaxCapacity = 15
+                },
+                new()
+                {
+                    Code = "MUS-001",
+                    Title = "Guitarra desde cero",
+                    Description = "Acordes básicos y primeras canciones.",
+                    InstructorId = hernan.Id,
+                    Instructor = hernan,
+                    InstructorEmail = hernan.Email,
+                    StartDate = DateTime.SpecifyKind(baseDate.AddDays(39).AddHours(19), DateTimeKind.Utc),
+                    EndDate = DateTime.SpecifyKind(baseDate.AddDays(39).AddHours(22), DateTimeKind.Utc),
+                    MaxCapacity = 10
                 }
             };
 
@@ -161,11 +192,32 @@ public static class DataSeeder
             await context.SaveChangesAsync();
         }
 
-        // Si existe un archivo Excel local (por ejemplo en la raíz o Descargas), cargar datos adicionales
-        await TrySeedFromExcelFileAsync(context, userManager);
+        // Si existen talleres adicionales fuera de los 6 permitidos, eliminarlos
+        var extraWorkshops = await context.Workshops
+            .Where(w => !allowedCodes.Contains(w.Code))
+            .ToListAsync();
+
+        if (extraWorkshops.Count > 0)
+        {
+            var extraIds = extraWorkshops.Select(w => w.Id).ToList();
+            var extraEnrollments = await context.Enrollments
+                .Where(e => extraIds.Contains(e.WorkshopId))
+                .ToListAsync();
+
+            if (extraEnrollments.Count > 0)
+            {
+                context.Enrollments.RemoveRange(extraEnrollments);
+            }
+
+            context.Workshops.RemoveRange(extraWorkshops);
+            await context.SaveChangesAsync();
+        }
+
+        // Si existe un archivo Excel local (por ejemplo en la raíz o Descargas), cargar datos adicionales sólo si están dentro de los 6 permitidos
+        await TrySeedFromExcelFileAsync(context, userManager, allowedCodes);
     }
 
-    private static async Task TrySeedFromExcelFileAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    private static async Task TrySeedFromExcelFileAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager, HashSet<string> allowedCodes)
     {
         string[] candidatePaths = [
             Path.Combine(AppContext.BaseDirectory, "SkillHub_Data.xlsx"),
@@ -261,6 +313,8 @@ public static class DataSeeder
                     var title = workWs.Cells[row, 2].Text.Trim();
                     var desc = workWs.Cells[row, 3].Text.Trim();
                     var instEmail = workWs.Cells[row, 4].Text.Trim().ToLowerInvariant();
+
+                    if (!allowedCodes.Contains(code)) continue;
                     
                     if (DateTime.TryParse(workWs.Cells[row, 5].Text, out var start) &&
                         DateTime.TryParse(workWs.Cells[row, 6].Text, out var end) &&

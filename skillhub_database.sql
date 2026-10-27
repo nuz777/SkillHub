@@ -124,14 +124,17 @@ VALUES
     ('22222222-2222-2222-2222-222222222222', 'Laura Gómez', 'laura.gomez@skillhub.com', 'Cocina', CURRENT_TIMESTAMP),
     ('33333333-3333-3333-3333-333333333333', 'Andrés Torres', 'andres.torres@skillhub.com', 'Oratoria', CURRENT_TIMESTAMP),
     ('44444444-4444-4444-4444-444444444444', 'Sofía Morales', 'sofia.morales@skillhub.com', 'Diseño Gráfico', CURRENT_TIMESTAMP),
+    ('66666666-6666-6666-6666-666666666666', 'Hernán Darío Quintero Gil', 'hernan.quintero@correo.com', 'Música', CURRENT_TIMESTAMP),
     ('55555555-5555-5555-5555-555555555555', 'Admin SkillHub', 'admin@skillhub.com', 'Coordinación', CURRENT_TIMESTAMP)
 ON CONFLICT ("Email") DO NOTHING;
 
--- Talleres Iniciales
+-- Talleres Iniciales (Los 6 primeros talleres oficiales)
 INSERT INTO "Workshops" ("Id", "Code", "Title", "Description", "InstructorId", "InstructorEmail", "StartDate", "EndDate", "MaxCapacity", "CreatedAt")
 VALUES
     ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'FOT-001', 'Fotografía Urbana y Manejo de Luz Natural', 'Taller práctico sobre composición visual, captura callejera y aprovechamiento de luz ambiental.', '11111111-1111-1111-1111-111111111111', 'carlos.mendoza@skillhub.com', CURRENT_TIMESTAMP + interval '7 days' + interval '9 hours', CURRENT_TIMESTAMP + interval '7 days' + interval '13 hours', 15, CURRENT_TIMESTAMP),
     ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'COC-001', 'Cocina Mediterránea Básica', 'Aprende técnicas fundamentales de preparación, pastas frescas y salsas clásicas.', '22222222-2222-2222-2222-222222222222', 'laura.gomez@skillhub.com', CURRENT_TIMESTAMP + interval '8 days' + interval '14 hours', CURRENT_TIMESTAMP + interval '8 days' + interval '18 hours', 12, CURRENT_TIMESTAMP),
     ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'ORA-001', 'Oratoria y Comunicación Asertiva', 'Técnicas de modulación de voz, lenguaje no verbal y persuasión para hablar en público con confianza.', '33333333-3333-3333-3333-333333333333', 'andres.torres@skillhub.com', CURRENT_TIMESTAMP + interval '9 days' + interval '10 hours', CURRENT_TIMESTAMP + interval '9 days' + interval '14 hours', 20, CURRENT_TIMESTAMP),
-    ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'DIS-001', 'Fundamentos de Diseño Visual y Branding', 'Creación de identidades de marca, teoría del color, tipografía y diseño con propósito.', '44444444-4444-4444-4444-444444444444', 'sofia.morales@skillhub.com', CURRENT_TIMESTAMP + interval '10 days' + interval '15 hours', CURRENT_TIMESTAMP + interval '10 days' + interval '19 hours', 18, CURRENT_TIMESTAMP)
+    ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'DIS-001', 'Fundamentos de Diseño Visual y Branding', 'Creación de identidades de marca, teoría del color, tipografía y diseño con propósito.', '44444444-4444-4444-4444-444444444444', 'sofia.morales@skillhub.com', CURRENT_TIMESTAMP + interval '10 days' + interval '15 hours', CURRENT_TIMESTAMP + interval '10 days' + interval '19 hours', 18, CURRENT_TIMESTAMP),
+    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'MAT-001', 'Matemáticas Básicas y Aplicadas', 'Aprende matemáticas y resolución de problemas prácticos.', '33333333-3333-3333-3333-333333333333', 'andres.torres@skillhub.com', CURRENT_TIMESTAMP + interval '22 days' + interval '10 hours', CURRENT_TIMESTAMP + interval '22 days' + interval '13 hours', 15, CURRENT_TIMESTAMP),
+    ('ffffffff-ffff-ffff-ffff-ffffffffffff', 'MUS-001', 'Guitarra desde cero', 'Acordes básicos y primeras canciones.', '66666666-6666-6666-6666-666666666666', 'hernan.quintero@correo.com', CURRENT_TIMESTAMP + interval '39 days' + interval '19 hours', CURRENT_TIMESTAMP + interval '39 days' + interval '22 hours', 10, CURRENT_TIMESTAMP)
 ON CONFLICT ("Code") DO NOTHING;
