@@ -5,21 +5,133 @@
     var totalSpots = Model.Sum(w => w.AvailableSpots);
 }
 
-<!-- Hero Section -->
-<div class="row align-items-center mb-4 pb-2">
-    <div class="col-md-7">
-        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-white border rounded-pill shadow-xs mb-2">
-            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">En Vivo</span>
-            <span class="small text-muted fw-semibold">@totalSpots cupos disponibles en @Model.Count() talleres</span>
+@section Hero {
+    <!-- Full-Width Enterprise Hero Banner -->
+    <div class="sh-hero-banner position-relative text-white overflow-hidden py-5">
+        <div class="sh-hero-glow-1"></div>
+        <div class="sh-hero-glow-2"></div>
+        <div class="sh-hero-grid-pattern"></div>
+
+        <div class="container position-relative py-lg-4" style="z-index: 2;">
+            <div class="row align-items-center g-4 g-lg-5">
+                <div class="col-lg-7">
+                    <!-- Chip tag -->
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3 shadow-sm" style="background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                        <span class="badge bg-success rounded-pill px-2 py-1 small" style="font-size: 0.72rem;">
+                            <i class="bi bi-broadcast me-1"></i> Talleres Presenciales 2026
+                        </span>
+                        <span class="text-white small fw-medium">Centro de Formación SkillHub</span>
+                    </div>
+
+                    <!-- Main Heading -->
+                    <h1 class="display-5 fw-bold text-white tracking-tight mb-3" style="letter-spacing: -1.2px; line-height: 1.15;">
+                        Aprende con los Mejores Instructores en <span style="background: linear-gradient(135deg, #60a5fa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Talleres Prácticos</span>
+                    </h1>
+
+                    <p class="lead text-light opacity-90 mb-4" style="font-size: 1.08rem; max-width: 600px; line-height: 1.6;">
+                        Potencia tus habilidades presenciales en grupos reducidos con retroalimentación inmediata, cupos verificados en tiempo real y constancia oficial de inscripción en PDF.
+                    </p>
+
+                    <!-- CTAs -->
+                    <div class="d-flex flex-wrap align-items-center gap-2 pt-1">
+                        <a href="#catalog" class="btn btn-light text-primary px-4 py-2 fw-bold shadow-sm" style="border-radius: 10px;">
+                            <i class="bi bi-grid-fill me-1"></i> Explorar Catálogo
+                        </a>
+
+                        @if (isEmployee)
+                        {
+                            <a asp-action="Create" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm text-white" style="border-radius: 10px; background: rgba(59, 130, 246, 0.35); border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px);">
+                                <i class="bi bi-plus-circle-fill me-1"></i> Publicar Taller
+                            </a>
+                            <a asp-controller="Enrollments" asp-action="Import" class="btn btn-outline-light px-3 py-2 fw-semibold" style="border-radius: 10px;">
+                                <i class="bi bi-file-earmark-excel me-1 text-success"></i> Importar Excel
+                            </a>
+                        }
+                        else if (!User.Identity?.IsAuthenticated == true)
+                        {
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light px-4 py-2 fw-semibold" style="border-radius: 10px;">
+                                <i class="bi bi-person-plus me-1"></i> Crear Cuenta
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Enrollments" asp-action="Index" class="btn btn-outline-light px-4 py-2 fw-semibold" style="border-radius: 10px;">
+                                <i class="bi bi-bookmark-check-fill me-1"></i> Mis Inscripciones
+                            </a>
+                        }
+                    </div>
+
+                    <!-- Highlights -->
+                    <div class="d-flex flex-wrap align-items-center gap-4 mt-4 pt-3 border-top border-white border-opacity-10 small text-light opacity-75">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-shield-check text-info fs-5"></i>
+                            <span>Certificación oficial en PDF</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+                            <span>Inscripción instantánea</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
+                            <span>100% Presencial</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Quick Stats & Floating Card Preview -->
+                <div class="col-lg-5">
+                    <div class="p-4 rounded-4 shadow-lg position-relative" style="background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.18);">
+                        <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-10">
+                            <div>
+                                <span class="badge bg-primary bg-opacity-50 text-white border border-primary-subtle small text-uppercase fw-bold px-2 py-1">Disponibilidad en Vivo</span>
+                                <h5 class="text-white fw-bold mt-2 mb-0">Cupos y Talleres Activos</h5>
+                            </div>
+                            <div class="bg-success text-white p-2 rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
+                                <i class="bi bi-check2-circle fs-4"></i>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 text-center mb-3">
+                            <div class="col-6">
+                                <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);">
+                                    <div class="display-6 fw-bold text-white">@Model.Count()</div>
+                                    <div class="text-light opacity-75 small fw-semibold">Talleres Disponibles</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);">
+                                    <div class="display-6 fw-bold text-warning">@totalSpots</div>
+                                    <div class="text-light opacity-75 small fw-semibold">Cupos Libres</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-3 d-flex align-items-center gap-3" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);">
+                            <i class="bi bi-info-circle-fill text-success fs-4"></i>
+                            <div class="small text-white">
+                                <strong>Cancelación flexible:</strong> Puedes cancelar tu inscripción con hasta 24 horas de anticipación sin penalización.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <h1 class="h2 fw-bold text-dark tracking-tight mb-1">Catálogo de Talleres Presenciales</h1>
-        <p class="text-muted mb-0">Formación práctica intensiva en fotografía, cocina, oratoria, diseño y más.</p>
+    </div>
+}
+
+<!-- Catalog Section -->
+<div id="catalog" class="row align-items-center mb-4 pb-2 pt-2">
+    <div class="col-md-7">
+        <h2 class="h3 fw-bold text-dark tracking-tight mb-1">
+            <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>Catálogo de Formación
+        </h2>
+        <p class="text-muted mb-0">Explora los talleres presenciales programados y asegura tu cupo.</p>
     </div>
     @if (isEmployee)
     {
         <div class="col-md-5 text-md-end mt-3 mt-md-0">
             <a asp-action="Create" class="btn btn-sh-primary fw-semibold shadow-sm">
-                <i class="bi bi-plus-circle-fill me-1"></i> Publicar Nuevo Taller
+                <i class="bi bi-plus-circle-fill me-1"></i> Publicar Taller
             </a>
             <a asp-controller="Enrollments" asp-action="Import" class="btn btn-outline-success fw-semibold ms-1" style="border-radius: 10px;">
                 <i class="bi bi-file-earmark-excel me-1"></i> Importar Excel
@@ -30,7 +142,7 @@
 
 @if (!Model.Any())
 {
-    <div class="card sh-card text-center py-5">
+    <div class="card sh-card text-center py-5 shadow-sm">
         <div class="card-body">
             <div class="bg-light text-muted p-4 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px;">
                 <i class="bi bi-calendar-x fs-2"></i>
@@ -58,11 +170,11 @@ else
                 .ToUpper();
 
             <div class="col-md-6 col-lg-4">
-                <div class="card sh-card sh-card-hover h-100 p-3 p-xl-4 d-flex flex-column">
+                <div class="card sh-card sh-card-hover h-100 p-3 p-xl-4 d-flex flex-column shadow-sm">
                     <!-- Card Top Header -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="badge bg-light text-secondary border fw-bold" style="border-radius: 6px; font-size: 0.78rem;">
-                            @workshop.Code
+                            <i class="bi bi-upc me-1"></i>@workshop.Code
                         </span>
                         @if (!isFull)
                         {
@@ -102,7 +214,7 @@ else
                     </div>
 
                     <!-- Instructor & Schedule Details -->
-                    <div class="bg-light rounded-3 p-3 mb-3 small">
+                    <div class="bg-light rounded-3 p-3 mb-3 small border border-light-subtle">
                         <div class="d-flex align-items-center gap-2 mb-2">
                             <div class="sh-avatar" style="width: 30px; height: 30px; font-size: 0.75rem;">
                                 @instructorInitials
