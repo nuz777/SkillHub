@@ -5,60 +5,69 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-9">
-        <a asp-action="Import" class="btn btn-link text-decoration-none px-0 mb-3">
+        <a asp-action="Import" class="btn btn-link text-decoration-none px-0 mb-3 text-secondary fw-semibold">
             <i class="bi bi-arrow-left me-1"></i> Cargar otro archivo
         </a>
 
-        <div class="card shadow-sm border-0 mb-4">
+        <div class="card sh-card fade-in-up border-0 shadow-sm mb-4">
             <div class="card-body p-4 p-md-5">
-                <h3 class="fw-bold text-dark mb-4">
-                    <i class="bi bi-clipboard-check text-primary me-2"></i>Resumen de Importación
-                </h3>
+                <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+                    <div>
+                        <span class="badge bg-primary-subtle text-primary fw-bold text-uppercase small px-2 py-1 mb-1">Informe de Procesamiento</span>
+                        <h3 class="fw-bold text-dark mb-0">Resumen de la Importación</h3>
+                    </div>
+                    <span class="badge bg-light text-secondary border px-3 py-2 fw-semibold">
+                        <i class="bi bi-clock-history me-1"></i> @DateTime.UtcNow.ToString("dd/MM/yyyy HH:mm") UTC
+                    </span>
+                </div>
 
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <div class="card bg-light border-0 text-center py-3">
-                            <div class="text-muted small">Total Procesadas</div>
-                            <div class="display-6 fw-bold text-dark">@Model.TotalProcessed</div>
+                        <div class="p-4 rounded-4 text-center" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                            <div class="text-secondary small fw-semibold text-uppercase">Total Procesadas</div>
+                            <div class="display-6 fw-bold text-dark mt-2">@Model.TotalProcessed</div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="card bg-success-subtle border-0 text-center py-3">
-                            <div class="text-success small fw-semibold">Inscritas Exitosamente</div>
-                            <div class="display-6 fw-bold text-success">@Model.SuccessfulCount</div>
+                        <div class="p-4 rounded-4 text-center bg-success-subtle border border-success-subtle">
+                            <div class="text-success small fw-bold text-uppercase">Inscritas con Éxito</div>
+                            <div class="display-6 fw-bold text-success mt-2">@Model.SuccessfulCount</div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="card bg-danger-subtle border-0 text-center py-3">
-                            <div class="text-danger small fw-semibold">Filas Rechazadas</div>
-                            <div class="display-6 fw-bold text-danger">@Model.RejectedCount</div>
+                        <div class="p-4 rounded-4 text-center bg-danger-subtle border border-danger-subtle">
+                            <div class="text-danger small fw-bold text-uppercase">Filas Rechazadas</div>
+                            <div class="display-6 fw-bold text-danger mt-2">@Model.RejectedCount</div>
                         </div>
                     </div>
                 </div>
 
                 @if (Model.RejectedRows.Any())
                 {
-                    <h5 class="fw-bold text-danger mb-3">
-                        <i class="bi bi-exclamation-triangle-fill me-1"></i>Detalle de Filas Rechazadas:
+                    <h5 class="fw-bold text-danger mb-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>Detalle de Filas Rechazadas:</span>
                     </h5>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle small mb-0">
-                            <thead class="table-danger text-danger">
+                    <div class="table-responsive rounded-3 border">
+                        <table class="table table-hover align-middle small mb-0">
+                            <thead class="table-light">
                                 <tr>
-                                    <th style="width: 80px;">Fila #</th>
+                                    <th class="ps-3" style="width: 80px;">Fila #</th>
                                     <th>Participante</th>
                                     <th>Código Taller</th>
-                                    <th>Motivo del Rechazo</th>
+                                    <th class="pe-3">Motivo del Rechazo</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var err in Model.RejectedRows)
                                 {
                                     <tr>
-                                        <td class="text-center fw-bold">@err.RowNumber</td>
-                                        <td>@err.ParticipantEmail</td>
-                                        <td><span class="badge bg-secondary">@err.WorkshopCode</span></td>
-                                        <td class="text-danger">@err.Reason</td>
+                                        <td class="ps-3 text-center fw-bold text-secondary">@err.RowNumber</td>
+                                        <td class="fw-semibold text-dark">@err.ParticipantEmail</td>
+                                        <td><span class="badge bg-light text-secondary border">@err.WorkshopCode</span></td>
+                                        <td class="text-danger pe-3">
+                                            <i class="bi bi-x-circle me-1"></i>@err.Reason
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
@@ -67,14 +76,14 @@
                 }
                 else
                 {
-                    <div class="alert alert-success border-0 py-3">
+                    <div class="alert alert-success border-0 py-3 rounded-3">
                         <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-                        ¡Todas las filas del archivo Excel fueron validadas e inscritas exitosamente sin ningún rechazo!
+                        <strong>¡Excelente!</strong> Todas las filas del archivo Excel fueron validadas y registradas exitosamente.
                     </div>
                 }
 
                 <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-                    <a asp-controller="Workshops" asp-action="Index" class="btn btn-primary px-4 fw-semibold">
+                    <a asp-controller="Workshops" asp-action="Index" class="btn btn-sh-primary px-4 fw-semibold">
                         Ver Catálogo de Talleres
                     </a>
                 </div>

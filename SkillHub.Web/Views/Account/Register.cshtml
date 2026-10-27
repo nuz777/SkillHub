@@ -3,58 +3,75 @@
     ViewData["Title"] = "Registro de Participante";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm border-0 my-5">
-            <div class="card-body p-4 p-md-5">
-                <div class="text-center mb-4">
-                    <i class="bi bi-person-plus display-4 text-primary"></i>
-                    <h3 class="fw-bold mt-2">Crear Cuenta</h3>
-                    <p class="text-muted small">Regístrate como participante en SkillHub</p>
-                </div>
-
-                <form asp-action="Register" method="post">
-                    @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
-
-                    <div class="mb-3">
-                        <label asp-for="FullName" class="form-label fw-semibold">Nombre Completo</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person"></i></span>
-                            <input asp-for="FullName" class="form-control" placeholder="Ej. Juan Pérez" required autofocus />
-                        </div>
-                        <span asp-validation-for="FullName" class="text-danger small"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Email" class="form-label fw-semibold">Correo Electrónico</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                            <input asp-for="Email" type="email" class="form-control" placeholder="nombre@ejemplo.com" required />
-                        </div>
-                        <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="Password" class="form-label fw-semibold">Contraseña</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                            <input asp-for="Password" type="password" class="form-control" placeholder="Mínimo 6 caracteres" required />
-                        </div>
-                        <span asp-validation-for="Password" class="text-danger small"></span>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
-                        <i class="bi bi-person-check me-1"></i> Registrarme
-                    </button>
-                </form>
-
-                <div class="text-center mt-4 border-top pt-3">
-                    <p class="text-muted small mb-0">
-                        ¿Ya tienes cuenta? <a asp-action="Login" class="text-primary fw-semibold text-decoration-none">Inicia sesión</a>
-                    </p>
-                </div>
+<div class="row justify-content-center align-items-center py-4">
+    <div class="col-md-7 col-lg-5 col-xl-4">
+        <div class="text-center mb-4">
+            <div class="bg-primary-subtle text-primary p-3 rounded-circle d-inline-flex align-items-center justify-content-center mb-2 shadow-sm" style="width: 58px; height: 58px;">
+                <i class="bi bi-person-plus-fill fs-3"></i>
             </div>
+            <h3 class="fw-bold text-dark mb-1">Crea tu Cuenta</h3>
+            <p class="text-muted small">Únete como participante a los talleres de SkillHub</p>
+        </div>
+
+        <div class="card sh-card p-4 shadow-sm border-0">
+            <form asp-action="Register" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small rounded-3" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label fw-semibold small text-dark">Nombre Completo</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person"></i></span>
+                        <input asp-for="FullName" class="form-control border-start-0 ps-0" placeholder="Ej. Juan Pérez" autocomplete="name" required autofocus />
+                    </div>
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label fw-semibold small text-dark">Correo Electrónico</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+                        <input asp-for="Email" type="email" class="form-control border-start-0 ps-0" placeholder="nombre@ejemplo.com" autocomplete="username" required />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Password" class="form-label fw-semibold small text-dark">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-key"></i></span>
+                        <input asp-for="Password" id="registerPassword" type="password" class="form-control border-start-0 border-end-0 px-0" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required />
+                        <button class="btn btn-light border border-start-0 text-muted" type="button" id="toggleRegPasswordBtn">
+                            <i class="bi bi-eye" id="toggleRegPasswordIcon"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-sh-primary w-100 py-2 fw-semibold shadow-sm">
+                    <i class="bi bi-person-check me-1"></i> Registrarme y Acceder
+                </button>
+            </form>
+        </div>
+
+        <div class="text-center mt-3">
+            <p class="text-muted small mb-0">
+                ¿Ya tienes una cuenta? <a asp-action="Login" class="text-primary fw-semibold text-decoration-none">Inicia sesión</a>
+            </p>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const regToggleBtn = document.getElementById('toggleRegPasswordBtn');
+        const regPasswordInput = document.getElementById('registerPassword');
+        const regToggleIcon = document.getElementById('toggleRegPasswordIcon');
+
+        regToggleBtn.addEventListener('click', function () {
+            const isPassword = regPasswordInput.getAttribute('type') === 'password';
+            regPasswordInput.setAttribute('type', isPassword ? 'text' : 'password');
+            regToggleIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+        });
+    </script>
+}

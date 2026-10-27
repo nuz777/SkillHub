@@ -5,77 +5,79 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <a asp-action="Index" class="btn btn-link text-decoration-none px-0 mb-3">
-            <i class="bi bi-arrow-left me-1"></i> Volver a talleres
+        <a asp-action="Index" class="btn btn-link text-decoration-none px-0 mb-3 text-secondary fw-semibold">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Catálogo
         </a>
 
-        <div class="card shadow-sm border-0">
+        <div class="card sh-card fade-in-up border-0 shadow-sm">
             <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-center gap-3 mb-4">
-                    <div class="bg-primary text-white p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
-                        <i class="bi bi-calendar-plus fs-4"></i>
+                <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                    <div class="p-3 rounded-4 d-flex align-items-center justify-content-center text-primary" style="width: 56px; height: 56px; background-color: rgba(30, 64, 175, 0.08);">
+                        <i class="bi bi-calendar-plus fs-3"></i>
                     </div>
                     <div>
+                        <span class="badge bg-primary-subtle text-primary fw-bold text-uppercase small px-2 py-1 mb-1">Módulo Docente</span>
                         <h3 class="fw-bold text-dark mb-0">Publicar Nuevo Taller</h3>
-                        <p class="text-muted small mb-0">Solo instructores y empleados de SkillHub pueden crear talleres presenciales.</p>
+                        <p class="text-muted small mb-0">Solo instructores y empleados autorizados pueden publicar talleres presenciales.</p>
                     </div>
                 </div>
 
                 <form asp-action="Create" method="post">
                     @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small rounded-3" role="alert"></div>
 
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label asp-for="Code" class="form-label fw-semibold">Código Único</label>
+                            <label asp-for="Code" class="form-label fw-semibold text-secondary small text-uppercase">Código Único</label>
                             <input asp-for="Code" class="form-control" placeholder="Ej. MAT-001" required autofocus />
                             <span asp-validation-for="Code" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-8">
-                            <label asp-for="Title" class="form-label fw-semibold">Título del Taller</label>
-                            <input asp-for="Title" class="form-control" placeholder="Ej. Matemáticas Básicas y Aplicadas" required />
+                            <label asp-for="Title" class="form-label fw-semibold text-secondary small text-uppercase">Título del Taller</label>
+                            <input asp-for="Title" class="form-control" placeholder="Ej. Arquitectura Limpia en .NET 10" required />
                             <span asp-validation-for="Title" class="text-danger small"></span>
                         </div>
 
                         <div class="col-12">
-                            <label asp-for="Description" class="form-label fw-semibold">Descripción del Taller</label>
-                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Describe los objetivos, contenido y metodología del taller presencial..."></textarea>
+                            <label asp-for="Description" class="form-label fw-semibold text-secondary small text-uppercase">Descripción del Programa</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Describe los objetivos, temas clave y metodología del taller presencial..."></textarea>
                             <span asp-validation-for="Description" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
-                            <label asp-for="InstructorEmail" class="form-label fw-semibold">Correo del Instructor</label>
+                            <label asp-for="InstructorEmail" class="form-label fw-semibold text-secondary small text-uppercase">Correo del Instructor</label>
                             <input asp-for="InstructorEmail" type="email" class="form-control" value="@(Model?.InstructorEmail ?? ViewBag.DefaultEmail)" placeholder="instructor@skillhub.com" required />
-                            <div class="form-text small">Debe ser un instructor registrado en SkillHub.</div>
+                            <div class="form-text small">Debe corresponder a un instructor registrado.</div>
                             <span asp-validation-for="InstructorEmail" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
-                            <label asp-for="MaxCapacity" class="form-label fw-semibold">Cupo Máximo</label>
+                            <label asp-for="MaxCapacity" class="form-label fw-semibold text-secondary small text-uppercase">Cupo Máximo</label>
                             <input asp-for="MaxCapacity" type="number" class="form-control" min="1" max="500" value="@(Model?.MaxCapacity > 0 ? Model.MaxCapacity : 15)" required />
+                            <div class="form-text small">Límite de asistentes presenciales permitidos.</div>
                             <span asp-validation-for="MaxCapacity" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
-                            <label asp-for="StartDate" class="form-label fw-semibold">Fecha y Hora de Inicio</label>
+                            <label asp-for="StartDate" class="form-label fw-semibold text-secondary small text-uppercase">Fecha y Hora de Inicio</label>
                             <input asp-for="StartDate" type="datetime-local" class="form-control" value="@ViewBag.DefaultStart" required />
                             <div class="form-text small">Debe ser una fecha futura.</div>
                             <span asp-validation-for="StartDate" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
-                            <label asp-for="EndDate" class="form-label fw-semibold">Fecha y Hora de Fin</label>
+                            <label asp-for="EndDate" class="form-label fw-semibold text-secondary small text-uppercase">Fecha y Hora de Finalización</label>
                             <input asp-for="EndDate" type="datetime-local" class="form-control" value="@ViewBag.DefaultEnd" required />
-                            <div class="form-text small">Debe ser posterior al inicio.</div>
+                            <div class="form-text small">Debe ser posterior a la fecha de inicio.</div>
                             <span asp-validation-for="EndDate" class="text-danger small"></span>
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-                        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
-                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
-                            <i class="bi bi-check-lg me-1"></i> Publicar Taller
+                    <div class="d-flex justify-content-end align-items-center gap-2 mt-4 pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-3">Cancelar</a>
+                        <button type="submit" class="btn btn-sh-primary px-4 fw-semibold">
+                            <i class="bi bi-check-circle me-1"></i> Publicar Taller
                         </button>
                     </div>
                 </form>

@@ -4,47 +4,170 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SkillHub</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <!-- Bootstrap 5 CSS & Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
     <style>
+        :root {
+            --sh-primary: #1e40af;
+            --sh-primary-hover: #1d4ed8;
+            --sh-primary-light: #eff6ff;
+            --sh-dark: #0f172a;
+            --sh-slate: #334155;
+            --sh-border: #e2e8f0;
+            --sh-card-bg: #ffffff;
+            --sh-bg: #f8fafc;
+        }
+
+        * {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+
         body {
-            background-color: #f8fafc;
+            background-color: var(--sh-bg);
+            color: var(--sh-slate);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-        .navbar-brand {
+
+        /* Glassmorphism Sticky Header */
+        .sh-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+            transition: all 0.25s ease;
+        }
+
+        .sh-navbar .navbar-brand {
+            font-weight: 800;
+            font-size: 1.35rem;
+            letter-spacing: -0.6px;
+            color: var(--sh-primary);
+        }
+
+        .sh-navbar .nav-link {
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--sh-slate);
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .sh-navbar .nav-link:hover {
+            color: var(--sh-primary);
+            background: var(--sh-primary-light);
+        }
+
+        /* Enterprise Cards & Animations */
+        .sh-card {
+            background: var(--sh-card-bg);
+            border: 1px solid var(--sh-border);
+            border-radius: 16px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .sh-card-hover:hover {
+            transform: translateY(-5px);
+            border-color: #cbd5e1;
+            box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+        }
+
+        /* Avatar circle */
+        .sh-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #ffffff;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        .card-workshop {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            border-radius: 12px;
+
+        /* Buttons */
+        .btn-sh-primary {
+            background: var(--sh-primary);
+            border-color: var(--sh-primary);
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 0.55rem 1.25rem;
+            transition: all 0.2s ease;
         }
-        .card-workshop:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        .btn-sh-primary:hover {
+            background: var(--sh-primary-hover);
+            border-color: var(--sh-primary-hover);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
         }
+
+        /* Badges */
+        .badge-enterprise {
+            padding: 0.45rem 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            letter-spacing: 0.2px;
+        }
+
+        /* Subtle Fade In Animation */
+        .fade-in-up {
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         footer {
             margin-top: auto;
+            background: #ffffff;
+            border-top: 1px solid var(--sh-border);
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <!-- Enterprise Glassmorphism Header -->
+    <nav class="navbar navbar-expand-lg sh-navbar py-2">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Workshops" asp-action="Index">
-                <i class="bi bi-mortarboard-fill fs-4"></i> SkillHub
+                <div class="bg-primary text-white p-2 rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 36px; height: 36px;">
+                    <i class="bi bi-mortarboard-fill fs-5"></i>
+                </div>
+                <span>SkillHub</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-                <span class="navbar-toggler-icon"></span>
+
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <i class="bi bi-list fs-3 text-dark"></i>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
                     <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Workshops" asp-action="Index">
-                            <i class="bi bi-calendar-event me-1"></i> Catálogo de Talleres
+                        <a class="nav-link" asp-controller="Workshops" asp-action="Index">
+                            <i class="bi bi-grid me-1 text-primary"></i> Catálogo
                         </a>
                     </li>
                     @if (User.Identity?.IsAuthenticated == true)
@@ -52,60 +175,61 @@
                         @if (User.IsInRole(UserRoles.Employee))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-warning fw-semibold" asp-controller="Workshops" asp-action="Create">
-                                    <i class="bi bi-plus-circle-fill me-1"></i> Publicar Taller
+                                <a class="nav-link text-primary fw-semibold" asp-controller="Workshops" asp-action="Create">
+                                    <i class="bi bi-plus-circle me-1"></i> Publicar Taller
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Enrollments" asp-action="Import">
-                                    <i class="bi bi-file-earmark-excel-fill text-success me-1"></i> Importar Excel
+                                <a class="nav-link" asp-controller="Enrollments" asp-action="Import">
+                                    <i class="bi bi-file-earmark-excel me-1 text-success"></i> Importar Excel
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white-50" href="http://localhost:5180/scalar" target="_blank">
-                                    <i class="bi bi-terminal me-1"></i> Panel API / Scalar
+                                <a class="nav-link text-muted" href="http://localhost:5180/scalar" target="_blank" title="Abrir documentación de la API en Scalar">
+                                    <i class="bi bi-sliders me-1"></i> API Scalar <i class="bi bi-box-arrow-up-right small"></i>
                                 </a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Enrollments" asp-action="Index">
-                                    <i class="bi bi-card-checklist me-1"></i> Mis Inscripciones
+                                <a class="nav-link" asp-controller="Enrollments" asp-action="Index">
+                                    <i class="bi bi-bookmark-check me-1 text-primary"></i> Mis Inscripciones
                                 </a>
                             </li>
                         }
                     }
                 </ul>
-                <div class="d-flex align-items-center gap-2">
+
+                <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         @if (User.IsInRole(UserRoles.Employee))
                         {
-                            <span class="badge bg-warning text-dark py-2 px-3 fw-semibold">
-                                <i class="bi bi-person-badge-fill me-1"></i> Instructor: @User.Identity.Name
+                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle badge-enterprise d-flex align-items-center gap-1">
+                                <i class="bi bi-shield-lock-fill"></i> Instructor: @User.Identity.Name
                             </span>
                         }
                         else
                         {
-                            <span class="badge bg-light text-dark py-2 px-3 fw-semibold">
-                                <i class="bi bi-person-fill me-1"></i> Participante: @User.Identity.Name
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle badge-enterprise d-flex align-items-center gap-1">
+                                <i class="bi bi-person-check-fill"></i> @User.Identity.Name
                             </span>
                         }
 
-                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline ms-2">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline ms-1">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-box-arrow-right"></i> Salir
+                            <button type="submit" class="btn btn-outline-secondary btn-sm px-3 fw-semibold" style="border-radius: 8px;">
+                                <i class="bi bi-box-arrow-right me-1"></i> Salir
                             </button>
                         </form>
                     }
                     else
                     {
-                        <a class="btn btn-light btn-sm fw-semibold" asp-controller="Account" asp-action="Login">
-                            <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                        <a class="btn btn-outline-secondary btn-sm px-3 fw-semibold" style="border-radius: 8px;" asp-controller="Account" asp-action="Login">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
                         </a>
-                        <a class="btn btn-outline-light btn-sm fw-semibold" asp-controller="Account" asp-action="Register">
+                        <a class="btn btn-sh-primary btn-sm px-3 fw-semibold" asp-controller="Account" asp-action="Register">
                             Registrarse
                         </a>
                     }
@@ -114,28 +238,39 @@
         </div>
     </nav>
 
-    <main class="container my-4">
+    <!-- Main Container -->
+    <main class="container my-4 flex-grow-1 fade-in-up">
         @if (TempData["Success"] != null)
         {
-            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert alert-success border-0 shadow-sm alert-dismissible fade show rounded-3 d-flex align-items-center gap-2 mb-4" role="alert">
+                <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                <div class="fw-medium">@TempData["Success"]</div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
         @if (TempData["Error"] != null)
         {
-            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert alert-danger border-0 shadow-sm alert-dismissible fade show rounded-3 d-flex align-items-center gap-2 mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
+                <div class="fw-medium">@TempData["Error"]</div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
 
         @RenderBody()
     </main>
 
-    <footer class="bg-white border-top py-3 text-center text-muted small">
-        <div class="container">
-            &copy; @DateTime.UtcNow.Year SkillHub - Centro de Formación Presencial | API & Web Clean Architecture
+    <!-- Clean Footer -->
+    <footer class="py-4 text-muted small">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-bold text-dark">SkillHub</span>
+                <span>•</span>
+                <span>Centro de Formación Presencial</span>
+            </div>
+            <div>
+                &copy; @DateTime.UtcNow.Year SkillHub Platform. Clean Architecture .NET 10.
+            </div>
         </div>
     </footer>
 
