@@ -152,7 +152,7 @@ dotnet run --project src/SkillHub.Web/SkillHub.Web.csproj
 
 ## 👤 Author Information
 
-- **Full Name**: [Tu Nombre Completo]
+- **Full Name**: Ivan David Mejia
 - **Clan**: [Tu Clan / Cohorte]
 - **Email**: [Tu Correo Electrónico]
 - **Identification Document**: [Tu Documento de Identidad]
